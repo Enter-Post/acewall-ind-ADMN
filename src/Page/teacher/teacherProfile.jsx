@@ -1,0 +1,126 @@
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { Calendar, Mail, School } from "lucide-react";
+import { TeacherProfileStatCard } from "@/CustomComponent/Card";
+import { axiosInstance } from "@/lib/AxiosInstance";
+
+export default function TeacherProfile() {
+  const { id } = useParams();
+  const [teacherInfo, setTeacherInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTeacher = async () => {
+      setLoading(true);
+      try {
+        const res = await axiosInstance.get(`/admin/user/${id}`);
+        setTeacherInfo(res.data);
+        console.log(res);
+      } catch (err) {
+        console.error("Failed to fetch teacher:", err);
+        setTeacherInfo(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTeacher();
+  }, [id]);
+
+  if (loading) return <p className="text-center py-20 text-gray-500">Loading...</p>;
+  if (!teacherInfo) return <p className="text-center py-20 text-red-500">Teacher not found.</p>;
+
+  // Handle name parts if separate fields are missing
+  const [firstName, ...rest] = (teacherInfo.firstName ? 
+    [teacherInfo.firstName, teacherInfo.middleName, teacherInfo.lastName].filter(Boolean) : 
+    teacherInfo.name?.split(" ") || []) || [];
+  const lastName = rest.length > 1 ? rest.pop() : rest[0] || "";
+  const middleName = rest.length > 1 ? rest.join(" ") : "";
+
+  // Use joiningDate or fallback to createdAt
+  const joinedDate = new Date(teacherInfo.joiningDate ?? teacherInfo.createdAt).toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  return (
+    <div className="max-w-5xl mx-auto p-8 bg-white rounded-xl shadow-lg">
+      {/* Profile Section */}
+      <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mb-12">
+        <Avatar className="w-28 h-28 ring-4 ring-green-400 shadow-md rounded-full">
+          <AvatarImage
+            src={teacherInfo.profileImg}
+            alt={`${firstName} ${lastName}`}
+            className="rounded-full object-cover h-full w-full"
+          />
+          <AvatarFallback className="bg-green-100 text-green-600 text-4xl font-bold flex items-center justify-center">
+            {firstName?.[0] ?? "T"}
+          </AvatarFallback>
+        </Avatar>
+
+        <div className="flex flex-col justify-center text-center md:text-left max-w-xl">
+          <h1 className="text-4xl font-extrabold text-gray-900 leading-tight flex flex-wrap justify-center md:justify-start gap-1">
+            <span>{firstName}</span>
+            {middleName && <span>{middleName}</span>}
+            <span>{lastName}</span>
+          </h1>
+
+          {teacherInfo.bio && (
+            <p className="mt-3 text-gray-700 text-base max-w-lg mx-auto md:mx-0">{teacherInfo.bio}</p>
+          )}
+
+          <div className="mt-6 space-y-3 text-gray-600 text-sm">
+            <div className="flex items-center justify-center md:justify-start gap-3">
+              <Mail className="w-5 h-5 text-green-500" />
+              <span>{teacherInfo.email}</span>
+            </div>
+
+            <div className="flex items-center justify-center md:justify-start gap-3">
+              <Calendar className="w-5 h-5 text-green-500" />
+              <span>Joined on {joinedDate}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="flex justify-center mb-8">
+        <TeacherProfileStatCard
+          className="max-w-xs"
+          icon={<School className="text-green-600" />}
+          title="Published Courses"
+          value={teacherInfo.courses?.length ?? teacherInfo.numberOfCourses ?? 0}
+        />
+      </div>
+
+      {/* Courses Grid */}
+      <div>
+        <h2 className="text-2xl font-semibold mb-6 text-gray-800">Courses by {firstName}</h2>
+        {(teacherInfo.courses && teacherInfo.courses.length > 0) ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {teacherInfo.courses.map((course, idx) => (
+              <div
+                key={idx}
+                className="rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+              >
+                <img
+                  src={course?.basics?.thumbnail ?? ""}
+                  alt={course?.basics?.courseTitle ?? "Course Thumbnail"}
+                  className="w-full h-40 object-cover"
+                />
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    {course?.basics?.courseTitle ?? "Untitled Course"}
+                  </h3>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-gray-500">No courses published yet.</p>
+        )}
+      </div>
+    </div>
+  );
+}
