@@ -234,41 +234,44 @@ const StudentCard = ({ student }) => {
     </Card>
   );
 };
-const TeacherCard = ({ teacher }) => (
-  <Card className="overflow-hidden rounded-2xl shadow-sm hover:shadow-xl transition-shadow duration-300 bg-white">
-    <CardContent className="px-6 py-2 flex flex-col items-center gap-3">
-      <div className="relative">
-        <Avatar className="w-24 h-24 ring-3 ring-gray-500 shadow-sm">
-          <AvatarImage
-            src={teacher.profileImg}
-            alt={teacher.firstName}
-            className="rounded-full object-cover"
-          />
-          <AvatarFallback className="bg-gray-200 text-gray-600 text-xl font-semibold flex items-center justify-center">
-            {teacher.firstName?.[0] || "T"}
-          </AvatarFallback>
-        </Avatar>
+const TeacherCard = ({ teacher, onViewProfile }) => (
+  <Card className="overflow-hidden rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-white border border-gray-200">
+    <CardContent className="p-6 flex flex-col items-center text-center">
+      <Avatar className="w-24 h-24 ring-4 ring-green-500 shadow-md mb-4">
+        <AvatarImage
+          src={teacher.profileImg}
+          alt={`${teacher.firstName ?? "T"} ${teacher.lastName ?? ""}`}
+          className="rounded-full object-cover w-full h-full"
+        />
+        <AvatarFallback className="bg-gray-200 text-gray-600 text-xl font-semibold flex items-center justify-center">
+          {teacher.firstName?.[0] ?? "T"}
+        </AvatarFallback>
+      </Avatar>
+
+      <h3 className="text-lg font-semibold text-gray-800">
+        {teacher.firstName ?? "Unnamed"} {teacher.lastName ?? ""}
+      </h3>
+      <p className="text-sm text-gray-500 truncate max-w-[200px]">{teacher.email ?? "No email"}</p>
+
+      <div className="w-full mt-4 space-y-1 text-sm text-gray-600">
+        <div className="flex justify-between">
+          <span>Joined</span>
+          <span className="font-medium text-gray-800">
+            {new Date(teacher.createdAt).toLocaleDateString()}
+          </span>
+        </div>
+        <div className="flex justify-between">
+          <span>Courses</span>
+          <span className="font-medium text-gray-800">
+            {teacher.courses?.length ?? 0}
+          </span>
+        </div>
       </div>
 
-      <div className="text-center">
-        <h3 className="text-xl font-bold text-gray-800">
-          {teacher.firstName} {teacher.lastName}
-        </h3>
-        <p className="text-sm text-gray-500">{teacher.email}</p>
-      </div>
-
-      <div className="w-full grid grid-cols-2 gap-y-2 gap-x-4 text-sm mt-2">
-        <span className="text-gray-500">Joined</span>
-        <span className="text-right text-gray-700 font-medium">
-          {new Date(teacher.createdAt).toLocaleDateString()}
-        </span>
-        <span className="text-gray-500">Courses</span>
-        <span className="text-right text-gray-700 font-medium">
-          {teacher.courses?.length ?? 0}
-        </span>
-      </div>
-
-      <Button className="mt-4 w-full bg-green-600 hover:bg-green-700 text-white transition-colors duration-300">
+      <Button
+        className="mt-5 w-full bg-green-600 hover:bg-green-700 text-white text-sm"
+        onClick={() => onViewProfile?.(teacher.id)}
+      >
         View Profile
       </Button>
     </CardContent>

@@ -31,8 +31,8 @@ export default function TeacherProfile() {
   if (!teacherInfo) return <p className="text-center py-20 text-red-500">Teacher not found.</p>;
 
   // Handle name parts if separate fields are missing
-  const [firstName, ...rest] = (teacherInfo.firstName ? 
-    [teacherInfo.firstName, teacherInfo.middleName, teacherInfo.lastName].filter(Boolean) : 
+  const [firstName, ...rest] = (teacherInfo.firstName ?
+    [teacherInfo.firstName, teacherInfo.middleName, teacherInfo.lastName].filter(Boolean) :
     teacherInfo.name?.split(" ") || []) || [];
   const lastName = rest.length > 1 ? rest.pop() : rest[0] || "";
   const middleName = rest.length > 1 ? rest.join(" ") : "";
@@ -59,16 +59,13 @@ export default function TeacherProfile() {
           </AvatarFallback>
         </Avatar>
 
-        <div className="flex flex-col justify-center text-center md:text-left max-w-xl">
+        <div className="flex flex-col w-full justify-center text-center md:text-left max-w-xl">
           <h1 className="text-4xl font-extrabold text-gray-900 leading-tight flex flex-wrap justify-center md:justify-start gap-1">
             <span>{firstName}</span>
             {middleName && <span>{middleName}</span>}
             <span>{lastName}</span>
           </h1>
 
-          {teacherInfo.bio && (
-            <p className="mt-3 text-gray-700 text-base max-w-lg mx-auto md:mx-0">{teacherInfo.bio}</p>
-          )}
 
           <div className="mt-6 space-y-3 text-gray-600 text-sm">
             <div className="flex items-center justify-center md:justify-start gap-3">
@@ -80,6 +77,11 @@ export default function TeacherProfile() {
               <Calendar className="w-5 h-5 text-green-500" />
               <span>Joined on {joinedDate}</span>
             </div>
+          </div>
+          <div className="mt-6 w-full max-w-2xl">
+            {teacherInfo.Bio && (
+              <p className="mt-3 text-gray-700 text-base mx-auto md:mx-0">{teacherInfo.Bio}</p>
+            )}
           </div>
         </div>
       </div>
