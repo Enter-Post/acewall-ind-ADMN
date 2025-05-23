@@ -218,10 +218,7 @@ const StudentCard = ({ student }) => {
             {new Date(student.createdAt).toLocaleDateString()}
           </span>
 
-          <span>Courses</span>
-          <span className="text-right font-medium text-gray-800">
-            {student.numberOfCourses ?? 0}
-          </span>
+          
         </div>
 
         <Button
@@ -394,26 +391,30 @@ const LandingPageCard = ({ name, description, imageUrl, buttonUrl }) => {
   );
 };
 
+
 function StudentProfileCourseCard({ course }) {
   return (
-    <Card className="p-4 flex flex-col items-center  gap-4 shadow-sm">
-      <div className="w-full sm:w-36 h-24 rounded-md overflow-hidden shrink-0">
-        <img
-          src={course.basics.thumbnail}
-          alt="Course Thumbnail"
-          className="w-full h-full object-cover"
-        />
-      </div>
-      <div className="flex-1 flex  flex-col sm:flex-row items-center sm:items-start justify-between w-full gap-4 ">
-        <div className="text-center sm:text-left">
-          <h3 className="font-bold text-gray-800">
-            {course.basics.courseTitle}
-          </h3>
+    <Link to={`/teacher/courses/courseDetail/${course._id}`} className="w-full">
+      <Card className="p-4 flex flex-row items-center gap-4 shadow-sm hover:shadow-md transition-shadow duration-300 cursor-pointer">
+        <div className="w-full sm:w-36 h-24 rounded-md overflow-hidden shrink-0">
+          <img
+            src={course.thumbnail.url}
+            alt="Course Thumbnail"
+            className="w-full h-full object-cover"
+          />
         </div>
-      </div>
-    </Card>
+        <div className="flex-1 flex flex-col sm:flex-row items-center sm:items-start justify-between w-full gap-4">
+          <div className="text-center sm:text-left">
+            <h3 className="font-bold text-gray-800">{course.courseTitle}</h3>
+          </div>
+        </div>
+      </Card>
+    </Link>
   );
 }
+
+
+
 
 
 function StudentProfileStatCard({ title, value, icon }) {

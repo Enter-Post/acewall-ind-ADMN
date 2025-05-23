@@ -6,17 +6,21 @@ import {
   GraduationCap,
   Users,
   MessageSquare,
+  Grid2x2,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { axiosInstance } from "@/lib/AxiosInstance";
 import { GlobalContext } from "@/Context/GlobalProvider";
+import { Link } from "react-router-dom";
 
 export default function TeacherDashboard() {
   const [courses, setCourses] = useState([]);
   const [students, setStudents] = useState([]);
   const [Teachers, setTeachers] = useState([]);
+  const [totalCategories, setTotalCategories] = useState(0);
+
   const [recentActivity, setRecentActivity] = useState([]);
   const { user } = useContext(GlobalContext);
   const teacherId = user?._id;
@@ -49,23 +53,15 @@ export default function TeacherDashboard() {
 
   }, []);
 
-  // Fetch recent comments
   useEffect(() => {
-    axiosInstance(`/comment/teacher/${teacherId}/comments`)
+    axiosInstance("/category/get")
       .then((res) => {
-        const formatted = res.data.comments.map((comment) => ({
-          user: `${comment.createdby.firstName} ${comment.createdby.lastName}`,
-          action: "commented on",
-          target: comment.course?.basics?.courseTitle || "a course",
-          time: new Date(comment.createdAt).toLocaleString("en-US", {
-            dateStyle: "medium",
-            timeStyle: "short",
-          }),
-        }));
-        setRecentActivity(formatted);
+        console.log("all categories:", res.data);
+        setTotalCategories(res.data.categories || []); // Access the 'categories' array
       })
       .catch(console.error);
-  }, [teacherId]);
+  }, []);
+
 
   const metrics = [
     {
@@ -83,6 +79,12 @@ export default function TeacherDashboard() {
       value: Teachers.length, // You can replace with separate user data if needed
       icon: <Users size={16} className="text-green-600" />,
     },
+    {
+      title: "Total Categorys",
+      value: totalCategories.length,
+      icon: <Grid2x2 size={16} className="text-green-600" />,
+    },
+   
   ];
 
   return (
@@ -110,32 +112,7 @@ export default function TeacherDashboard() {
 
       {/* Activity and Recent Courses */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Activity */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold">Recent Comments</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {recentActivity.length > 0 ? (
-              recentActivity.map((activity, i) => (
-                <div key={i} className="flex gap-4 items-start border p-3 rounded-md bg-white">
-                  <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center text-orange-600">
-                    <MessageSquare size={16} />
-                  </div>
-                  <div>
-                    <p className="text-sm">
-                      <span className="font-medium">{activity.user}</span> {activity.action}{" "}
-                      <span className="font-medium text-gray-800">{activity.target}</span>
-                    </p>
-                    <p className="text-xs text-gray-500 mt-1">{activity.time}</p>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p className="text-sm text-gray-500">No recent activity to show.</p>
-            )}
-          </CardContent>
-        </Card>
+
 
         {/* Recent Courses */}
         <Card>
@@ -144,17 +121,19 @@ export default function TeacherDashboard() {
           </CardHeader>
           <CardContent className="space-y-4">
             {courses.slice(0, 3).map((course, i) => (
-              <div key={i} className="flex gap-4 items-start border p-3 rounded-md bg-white">
-                <img
-                  src={course.thumbnail?.url || "/placeholder.svg"}
-                  alt={course.courseTitle}
-                  className="w-10 h-10 object-cover rounded"
-                />
-                <div>
-                  <h3 className="text-sm font-medium">{course.courseTitle}</h3>
-                  <p className="text-xs text-gray-500">{course.category?.title}</p>
+              <Link href={`/teacher/courses/courseDetail/${course._id}`} key={i}>
+                <div className="flex gap-4 items-start border p-3 rounded-md bg-white hover:bg-gray-50 cursor-pointer">
+                  <img
+                    src={course.thumbnail?.url || "/placeholder.svg"}
+                    alt={course.courseTitle}
+                    className="w-10 h-10 object-cover rounded"
+                  />
+                  <div>
+                    <h3 className="text-sm font-medium">{course.courseTitle}</h3>
+                    <p className="text-xs text-gray-500">{course.category?.title}</p>
+                  </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </CardContent>
         </Card>

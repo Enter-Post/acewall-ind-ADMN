@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -18,34 +18,68 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus } from "lucide-react";
+import { Plus, Loader } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { axiosInstance } from "@/lib/AxiosInstance";
 
 const Category = () => {
-  const [categories, setCategories] = useState([
-    { name: "Programming", courses: 12 },
-    { name: "Design", courses: 8 },
-    { name: "Marketing", courses: 5 },
-  ]);
+  const [categories, setCategories] = useState([]);
+  const [subCountMap, setSubCountMap] = useState({});
   const [newCategoryName, setNewCategoryName] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleAddCategory = () => {
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    setLoading(true);
+    try {
+      const res = await axiosInstance.get("/category/get");
+      setCategories(res.data.categories);
+      await fetchSubcategoryCounts(res.data.categories);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchSubcategoryCounts = async (categories) => {
+    try {
+      const counts = {};
+      for (const cat of categories) {
+        const res = await axiosInstance.get(`/category/subcategories/${cat._id}`);
+        counts[cat._id] = res.data.subcategories.length;
+      }
+      setSubCountMap(counts);
+    } catch (error) {
+      console.error("Error fetching subcategory counts:", error);
+    }
+  };
+
+  const handleAddCategory = async () => {
     if (!newCategoryName.trim()) return;
-    setCategories((prev) => [
-      ...prev,
-      { name: newCategoryName.trim(), courses: 0 },
-    ]);
-    setNewCategoryName("");
-    setDialogOpen(false);
+
+    try {
+      const res = await axiosInstance.post("/category/create", {
+        title: newCategoryName.trim(),
+      });
+      setCategories((prev) => [...prev, res.data.category]);
+      setSubCountMap((prev) => ({ ...prev, [res.data.category._id]: 0 }));
+      setNewCategoryName("");
+      setDialogOpen(false);
+    } catch (error) {
+      console.error("Error creating category:", error);
+    }
   };
 
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Categories</h1>
-
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <Button className="flex items-center gap-2">
@@ -53,12 +87,10 @@ const Category = () => {
               Add New Category
             </Button>
           </DialogTrigger>
-
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Add New Category</DialogTitle>
             </DialogHeader>
-
             <div className="space-y-4">
               <Label htmlFor="categoryName">Category Name</Label>
               <Input
@@ -77,33 +109,43 @@ const Category = () => {
 
       <Card>
         <CardContent className="p-4">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Serial Number</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>No of Courses</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {categories.map((cat, index) => (
-                <TableRow key={index}>
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>
-                    <button
-                      onClick={() =>
-                        navigate(`/teacher/subcategory/${encodeURIComponent(cat.name)}`)
-                      }
-                      className="text-blue-600 hover:underline cursor-pointer"
-                    >
-                      {cat.name}
-                    </button>
-                  </TableCell>
-                  <TableCell>{cat.courses}</TableCell>
+          {loading ? (
+            <div className="flex justify-center items-center py-10">
+              <Loader size={48} className="animate-spin text-primary" />
+            </div>
+          ) : categories.length === 0 ? (
+            <div className="text-center text-gray-500 py-8">
+              No categories found.
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Serial Number</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead>No of Subcategories</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {categories.map((cat, index) => (
+                  <TableRow key={cat._id}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>
+                      <button
+                        onClick={() =>
+                          navigate(`/teacher/subcategory/${encodeURIComponent(cat.title)}`)
+                        }
+                        className="text-blue-600 hover:underline cursor-pointer"
+                      >
+                        {cat.title}
+                      </button>
+                    </TableCell>
+                    <TableCell>{subCountMap[cat._id] ?? 0}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
     </div>

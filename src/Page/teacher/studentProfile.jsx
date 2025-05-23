@@ -19,6 +19,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 export default function StudentProfile() {
   const { id } = useParams();
   const [studentInfo, setStudentInfo] = useState(null);
+  const [enrolledCourses, setEnrolledCourses] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -28,7 +29,6 @@ export default function StudentProfile() {
         const res = await axiosInstance.get(`/admin/user/${id}`);
         setStudentInfo(res.data);
         console.log(res);
-        
       } catch (err) {
         console.error("Error fetching student profile:", err);
       } finally {
@@ -36,6 +36,22 @@ export default function StudentProfile() {
       }
     };
     getUser();
+  }, [id]);
+
+
+
+  
+  useEffect(() => {
+    const getEnrolledCourses = async () => {
+      try {
+        const res = await axiosInstance.get(`/admin/student-enrolled-courses/${id}`);
+        setEnrolledCourses(res.data.enrolledCourses);
+        console.log("Enrolled courses data:", res.data.enrolledCourses);
+      } catch (err) {
+        console.error("Error fetching enrolled courses:", err);
+      }
+    };
+    getEnrolledCourses();
   }, [id]);
 
   if (loading) {
@@ -97,23 +113,32 @@ export default function StudentProfile() {
           className="max-w-xs"
           icon={<School />}
           title="Enrolled Courses"
-          value={studentInfo?.purchasedCourse?.length || 0}
+          value={enrolledCourses.length}
         />
       </div>
 
       {/* Enrolled Courses */}
       <div className="space-y-6">
         <h2 className="text-xl font-semibold text-gray-800 mb-2">Enrolled Courses</h2>
-        <div className="flex flex-row gap-8 items-center flex-wrap justify-center md:justify-start">
-          {studentInfo?.purchasedCourse?.length > 0 ? (
-            studentInfo.purchasedCourse.map((course, index) => (
-              <StudentProfileCourseCard key={index} course={course} />
-            ))
+        <div className="flex flex-col gap-8  flex-wrap md:justify-start">
+          {enrolledCourses.length > 0 ? (
+            enrolledCourses.map((item, index) => {
+              const course = item.course;
+              if (!course || !course.thumbnail || !course.courseTitle) return null;
+
+              return (
+                <StudentProfileCourseCard
+                  key={index}
+                  course={course}
+                />
+              );
+            })
           ) : (
             <p className="text-gray-500">No enrolled courses.</p>
           )}
         </div>
       </div>
+
     </div>
   );
 }

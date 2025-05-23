@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Calendar, Mail, School } from "lucide-react";
@@ -8,36 +8,64 @@ import { axiosInstance } from "@/lib/AxiosInstance";
 export default function TeacherProfile() {
   const { id } = useParams();
   const [teacherInfo, setTeacherInfo] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [teacherLoading, setTeacherLoading] = useState(true);
+  const [courseLoading, setCourseLoading] = useState(true);
+  const [teacherCourses, setTeacherCourses] = useState([]);
 
+  // Fetch teacher info
   useEffect(() => {
     const fetchTeacher = async () => {
-      setLoading(true);
+      setTeacherLoading(true);
       try {
         const res = await axiosInstance.get(`/admin/user/${id}`);
         setTeacherInfo(res.data);
-        console.log(res);
       } catch (err) {
         console.error("Failed to fetch teacher:", err);
         setTeacherInfo(null);
       } finally {
-        setLoading(false);
+        setTeacherLoading(false);
       }
     };
     fetchTeacher();
   }, [id]);
 
-  if (loading) return <p className="text-center py-20 text-gray-500">Loading...</p>;
+  // Fetch courses for the teacher
+  useEffect(() => {
+    if (!id) return;
+    setCourseLoading(true);
+
+    const getCourses = async () => {
+      try {
+        const response = await axiosInstance.get("/course/getCoursesforadminofteacher", {
+
+          params: { teacherId: id },
+        });
+        console.log(id)
+        setTeacherCourses(response.data.courses);
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+        setTeacherCourses([]);
+      } finally {
+        setCourseLoading(false);
+      }
+    };
+
+    getCourses();
+  }, [id]);
+
+  // Show loader while fetching both teacher info and courses
+  if (teacherLoading || courseLoading) {
+    return <p className="text-center py-20 text-gray-500">Loading profile and courses...</p>;
+  }
+
   if (!teacherInfo) return <p className="text-center py-20 text-red-500">Teacher not found.</p>;
 
-  // Handle name parts if separate fields are missing
-  const [firstName, ...rest] = (teacherInfo.firstName ?
-    [teacherInfo.firstName, teacherInfo.middleName, teacherInfo.lastName].filter(Boolean) :
-    teacherInfo.name?.split(" ") || []) || [];
+  const [firstName, ...rest] = (teacherInfo.firstName
+    ? [teacherInfo.firstName, teacherInfo.middleName, teacherInfo.lastName].filter(Boolean)
+    : teacherInfo.name?.split(" ") || []) || [];
   const lastName = rest.length > 1 ? rest.pop() : rest[0] || "";
   const middleName = rest.length > 1 ? rest.join(" ") : "";
 
-  // Use joiningDate or fallback to createdAt
   const joinedDate = new Date(teacherInfo.joiningDate ?? teacherInfo.createdAt).toLocaleDateString(undefined, {
     year: "numeric",
     month: "long",
@@ -66,7 +94,6 @@ export default function TeacherProfile() {
             <span>{lastName}</span>
           </h1>
 
-
           <div className="mt-6 space-y-3 text-gray-600 text-sm">
             <div className="flex items-center justify-center md:justify-start gap-3">
               <Mail className="w-5 h-5 text-green-500" />
@@ -92,31 +119,32 @@ export default function TeacherProfile() {
           className="max-w-xs"
           icon={<School className="text-green-600" />}
           title="Published Courses"
-          value={teacherInfo.courses?.length ?? teacherInfo.numberOfCourses ?? 0}
+          value={teacherCourses.length}
         />
       </div>
 
       {/* Courses Grid */}
       <div>
         <h2 className="text-2xl font-semibold mb-6 text-gray-800">Courses by {firstName}</h2>
-        {(teacherInfo.courses && teacherInfo.courses.length > 0) ? (
+        {teacherCourses.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {teacherInfo.courses.map((course, idx) => (
-              <div
+            {teacherCourses.map((course, idx) => (
+              <Link
+                to={`/teacher/courses/courseDetail/${course._id}`}
                 key={idx}
-                className="rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+                className="rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow duration-300 cursor-pointer block"
               >
                 <img
-                  src={course?.basics?.thumbnail ?? ""}
-                  alt={course?.basics?.courseTitle ?? "Course Thumbnail"}
+                  src={course?.thumbnail?.url ?? ""}
+                  alt={course?.courseTitle ?? "Course Thumbnail"}
                   className="w-full h-40 object-cover"
                 />
                 <div className="p-4">
                   <h3 className="text-lg font-semibold text-gray-900">
-                    {course?.basics?.courseTitle ?? "Untitled Course"}
+                    {course?.courseTitle ?? "Untitled Course"}
                   </h3>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         ) : (

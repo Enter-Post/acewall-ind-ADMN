@@ -80,7 +80,7 @@ const CommentSection = ({ id }) => {
           ))
         ) : (
           <p className="text-gray-500 text-center py-6">
-            No comments yet. Be the first to comment!
+            No comments yet.
           </p>
         )}
       </div>

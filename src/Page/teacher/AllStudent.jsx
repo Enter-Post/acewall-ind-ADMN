@@ -14,7 +14,8 @@ const AllStudent = () => {
         const rawStudents = Array.isArray(res.data)
           ? res.data
           : res.data.users || [];
-
+        console.log(res);
+        
         const normalized = rawStudents.map((s, i) => {
           const cleanName = s.name?.replace(/<[^>]+>/g, "").trim() || "Unknown";
           const nameParts = cleanName.split(/\s+/);

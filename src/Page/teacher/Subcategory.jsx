@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -19,39 +19,98 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
-import { Plus } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
+import { axiosInstance } from "@/lib/AxiosInstance";
 
 const Subcategory = () => {
   const { categoryName } = useParams();
-
-  // Sample subcategory data
-  const initialSubcategories = {
-    Programming: ["Web Development", "Mobile Apps", "Data Science"],
-    Design: ["UI/UX", "Graphic Design", "3D Modeling"],
-    Marketing: ["Digital Marketing", "SEO", "Content Strategy"],
-  };
-
-  const [subcategories, setSubcategories] = useState(() => {
-    const decodedCategory = decodeURIComponent(categoryName);
-    return initialSubcategories[decodedCategory] || [];
-  });
-
+  const [subcategories, setSubcategories] = useState([]);
   const [newSub, setNewSub] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [categoryId, setCategoryId] = useState(null);
+  const navigate = useNavigate();
 
-  const handleAddSubcategory = () => {
-    if (!newSub.trim()) return;
-    setSubcategories((prev) => [...prev, newSub.trim()]);
-    setNewSub("");
-    setDialogOpen(false);
+  const fetchCategoryId = async () => {
+    try {
+      const { data } = await axiosInstance.get("/category/get");
+      const category = data.categories.find(
+        (cat) =>
+          cat.title.toLowerCase() ===
+          decodeURIComponent(categoryName).toLowerCase()
+      );
+      if (category) {
+        setCategoryId(category._id);
+      }
+    } catch (err) {
+      console.error("Error fetching categories:", err);
+    }
   };
+
+  const fetchSubcategories = async (id) => {
+    try {
+      const { data } = await axiosInstance.get(`/category/subcategories/${id}`);
+      // Store full subcategory objects for id & title
+      setSubcategories(data.subcategories);
+      console.log(data);
+      
+    } catch (err) {
+      console.error("Error fetching subcategories:", err);
+    }
+  };
+
+  const handleAddSubcategory = async () => {
+    if (!newSub.trim()) return;
+    try {
+      const { data } = await axiosInstance.post("/subcategory/create", {
+        title: newSub,
+        category: categoryId,
+      });
+
+      // Add new subcategory object returned from backend
+      setSubcategories((prev) =>
+        [...prev, data.subcategory].sort((a, b) =>
+          a.title.localeCompare(b.title)
+        )
+      );
+
+      setNewSub("");
+      setDialogOpen(false);
+    } catch (err) {
+      console.error("Error creating subcategory:", err);
+    }
+  };
+
+  // DELETE handler
+  const handleDeleteSubcategory = async (id) => {
+    try {
+      await axiosInstance.delete(`/subcategory/delete/${id}`);
+      setSubcategories((prev) => prev.filter((sub) => sub._id !== id));
+    } catch (err) {
+      console.error("Error deleting subcategory:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategoryId();
+  }, []);
+
+  useEffect(() => {
+    if (categoryId) {
+      fetchSubcategories(categoryId);
+    }
+  }, [categoryId]);
 
   return (
     <div className="p-6 space-y-6">
+      <Button variant="outline" onClick={() => navigate(-1)}>
+        ← Back
+      </Button>
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">
-          Subcategories for: {decodeURIComponent(categoryName)}
-        </h1>
+        <div className="flex items-center gap-4">
+          <h1 className="text-2xl font-semibold">
+            Subcategories for: {decodeURIComponent(categoryName)}
+          </h1>
+        </div>
 
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
@@ -89,15 +148,32 @@ const Subcategory = () => {
               <TableRow>
                 <TableHead>Serial Number</TableHead>
                 <TableHead>Sub Category</TableHead>
+                <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {subcategories.map((sub, index) => (
-                <TableRow key={index}>
+                <TableRow key={sub._id}>
                   <TableCell>{index + 1}</TableCell>
-                  <TableCell>{sub}</TableCell>
+                  <TableCell>{sub.title}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDeleteSubcategory(sub._id)}
+                    >
+                      <Trash2 className="text-red-500" size={18} />
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
+              {subcategories.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={3} className="text-center text-gray-500">
+                    No subcategories found.
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </CardContent>
@@ -107,4 +183,3 @@ const Subcategory = () => {
 };
 
 export default Subcategory;
-    
