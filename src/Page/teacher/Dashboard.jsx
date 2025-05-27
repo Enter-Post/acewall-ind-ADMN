@@ -7,6 +7,7 @@ import {
   Users,
   MessageSquare,
   Grid2x2,
+  Mail,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,8 @@ export default function TeacherDashboard() {
   const [students, setStudents] = useState([]);
   const [Teachers, setTeachers] = useState([]);
   const [totalCategories, setTotalCategories] = useState(0);
+    const [totalSubscribers, setTotalSubscribers] = useState(0);
+
 
   const [recentActivity, setRecentActivity] = useState([]);
   const { user } = useContext(GlobalContext);
@@ -62,6 +65,13 @@ export default function TeacherDashboard() {
       .catch(console.error);
   }, []);
 
+useEffect(() => {
+    axiosInstance("/newsletter/subscribers")
+      .then((res) => {
+        setTotalSubscribers(res.data.length || 0); // Assuming `res.data` is an array of subscribers
+      })
+      .catch(console.error);
+  }, []);
 
   const metrics = [
     {
@@ -83,6 +93,11 @@ export default function TeacherDashboard() {
       title: "Total Categorys",
       value: totalCategories.length,
       icon: <Grid2x2 size={16} className="text-green-600" />,
+    },
+     {
+      title: "Total Subscribers",
+      value: totalSubscribers,
+      icon: <Mail size={16} className="text-green-600" />,
     },
    
   ];

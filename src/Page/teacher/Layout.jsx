@@ -13,6 +13,7 @@ import {
   Users,
   Headset,
   School,
+  Mails,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Button } from "../../components/ui/button";
@@ -68,6 +69,12 @@ const sideBarTabs = [
     name: "SchoolProfile",
     icon: <School />,
     path: "/teacher/SchoolProfile",
+  },
+  {
+    id: 13,
+    name: "Newsletter",
+    icon: <Mails />,
+    path: "/teacher/Newsletter",
   },
 ];
 

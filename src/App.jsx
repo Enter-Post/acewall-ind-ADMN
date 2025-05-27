@@ -53,6 +53,7 @@ import Category from "./Page/teacher/Category";
 import Subcategory from "./Page/teacher/Subcategory";
 import Account from "./Page/teacher/Account";
 import SchoolProfile from "./Page/teacher/Schoolproile";
+import Newsletter from "./Page/teacher/Newsletter";
 
 function App() {
   const { checkAuth, user, Authloading, socket, setSocket, setOnlineUser } =
@@ -146,6 +147,7 @@ function App() {
             <Route path="category" element={<Category />} />
             <Route path="subcategory/:categoryName" element={<Subcategory />} />
             <Route path="allStudent" element={<AllStudent />} />
+            <Route path="newsletter" element={<Newsletter />} />
             <Route path="allTeacher" element={<AllTeacher />} />
             <Route path="studentProfile/:id" element={<StudentProfile />} />
             <Route path="teacherProfile/:id" element={<TeacherProfile />} />
