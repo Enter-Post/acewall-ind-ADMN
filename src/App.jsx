@@ -7,17 +7,17 @@ import Login from "./Page/Login";
 // import Announcement from "./Page/StudentPortal/Announcement";
 // import Account from "./Page/StudentPortal/Account";
 // import Gradebook from "./Page/StudentPortal/Gradebook";
-import SignupPage from "./Page/signup";
+// import SignupPage from "./Page/signup";
 // import AllCourses from "./Page/AllCourses";
-import AllCoursesDetail from "./Page/allCourseDetail";
-import MainLayout from "./Page/MainLayout";
+// import AllCoursesDetail from "./Page/allCourseDetail";
+// import MainLayout from "./Page/MainLayout";
 import Support from "./Page/Support";
-import LandingPage from "./Page/LandingPage";
+// import LandingPage from "./Page/LandingPage";
 // import Messages from "./Page/StudentPortal/Messages";
 
-import GeneralCourses from "./Page/GeneralCourses";
-import GeneralSupport from "./Page/GeneralSupport";
-import GeneralCoursesDetail from "./Page/GeneralCourseDetail";
+// import GeneralCourses from "./Page/GeneralCourses";
+// import GeneralSupport from "./Page/GeneralSupport";
+// import GeneralCoursesDetail from "./Page/GeneralCourseDetail";
 import TeacherDashboard from "./Page/teacher/Dashboard";
 import TeacherLayout from "./Page/teacher/Layout";
 // import TeacherAccount from "./Page/teacher/Account";
@@ -30,12 +30,11 @@ import TeacherCourseDetails from "./Page/teacher/Courses/CourseDetail";
 // import CreateCourses from "./Page/teacher/Courses/CreateCourses";
 // import CoursesChapter from "./Page/teacher/Courses/CourseChapters";
 // import TeacherGradebook from "./Page/teacher/Courses/Gradebook";
-import TeacherLogin from "./Page/TeacherLogin";
 // import CreateAssessmentPage from "./Page/teacher/CreateAssessment";
-import AdditionalServices from "./Page/AdditionalServices";
-import About from "./Page/About";
+// import AdditionalServices from "./Page/AdditionalServices";
+// import About from "./Page/About";
 import ScrollToTop from "./lib/scrolltop";
-import ContactUs from "./Page/ContactUs";
+// import ContactUs from "./Page/ContactUs";
 import { PrivateRoute, PublicRoute } from "./lib/PrivateRoutes";
 
 // import CoursesBasis from "./Page/teacher/Courses/CoursesBasics";
@@ -45,13 +44,15 @@ import { useContext } from "react";
 import LoadingLoader from "./CustomComponent/LoadingLoader";
 // import MainDetailPage from "./Page/StudentPortal/Courses/MainDetailPage";
 // import ChapterDetail from "./Page/StudentPortal/Courses/MyCourseDetail";
-import NotFoundPage from "./Page/NotFoundPage";
+// import NotFoundPage from "./Page/NotFoundPage";
 import { io } from "socket.io-client";
 // import ChatWindow from "./CustomComponent/MessagesCmp.jsx/chat-window";
 import AllTeacher from "./Page/teacher/AllTeacher";
 import TeacherProfile from "./Page/teacher/teacherProfile";
 import Category from "./Page/teacher/Category";
 import Subcategory from "./Page/teacher/Subcategory";
+import Account from "./Page/teacher/Account";
+import SchoolProfile from "./Page/teacher/Schoolproile";
 
 function App() {
   const { checkAuth, user, Authloading, socket, setSocket, setOnlineUser } =
@@ -101,10 +102,10 @@ function App() {
             />
           }
         >
-          <Route path="/login" element={<Login />}></Route>
-          <Route path="/TeacherLogin" element={<TeacherLogin />}></Route>
-          <Route path="/signup" element={<SignupPage />}></Route>
-          <Route path="/" element={<MainLayout />}>
+          <Route path="/" element={<Login />}></Route>
+          {/* <Route path="/TeacherLogin" element={<TeacherLogin />}></Route> */}
+          {/* <Route path="/signup" element={<SignupPage />}></Route> */}
+          {/* <Route path="/" element={<MainLayout />}>
             <Route index element={<LandingPage />} />
             <Route path="/Courses">
               <Route index element={<GeneralCourses />}></Route>
@@ -122,7 +123,7 @@ function App() {
               path="/AdditionalServices"
               element={<AdditionalServices />}
             ></Route>
-          </Route>
+          </Route> */}
         </Route>
 
         
@@ -131,7 +132,8 @@ function App() {
         <Route element={<PrivateRoute user={user} allowedRole="teacher" />}>
           <Route path="/teacher" element={<TeacherLayout />}>
             <Route index element={<TeacherDashboard />} />
-            {/* <Route path="account" element={<TeacherAccount />} /> */}
+            <Route path="account" element={<Account />} />
+            <Route path="SchoolProfile" element={<SchoolProfile />} />
             {/* <Route path="messages" element={<TeacherMessages />} /> */}
             {/*    <Route path="assignment">
               <Route index element={<TeacherrAssessment />} />

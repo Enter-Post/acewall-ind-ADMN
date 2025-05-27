@@ -12,6 +12,7 @@ import {
   Wallet,
   Users,
   Headset,
+  School,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Button } from "../../components/ui/button";
@@ -61,6 +62,12 @@ const sideBarTabs = [
     name: "Support",
     icon: <Headset />,
     path: "/teacher/support",
+  },
+  {
+    id: 13,
+    name: "SchoolProfile",
+    icon: <School />,
+    path: "/teacher/SchoolProfile",
   },
 ];
 

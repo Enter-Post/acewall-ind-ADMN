@@ -47,7 +47,6 @@ const Account = () => {
 
   console.log(selectedImage, "selectedImg");
 
-  // Initialize React Hook Form with Zod resolver
   const {
     register,
     handleSubmit,

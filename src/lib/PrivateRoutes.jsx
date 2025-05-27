@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom";
 
-const PrivateRoute = ({ user, allowedRole, redirectTo = "/login" }) => {
+const PrivateRoute = ({ user, allowedRole, redirectTo = "/" }) => {
   if (!user) return <Navigate to={redirectTo} />;
   return user.role === allowedRole ? <Outlet /> : <Navigate to="/" />;
 };

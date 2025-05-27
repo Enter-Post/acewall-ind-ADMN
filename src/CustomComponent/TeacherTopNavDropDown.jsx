@@ -11,11 +11,18 @@ import axios from "axios";
 import { axiosInstance } from "@/lib/AxiosInstance";
 import { useContext } from "react";
 import { GlobalContext } from "@/Context/GlobalProvider";
+import { toast } from "sonner";
 
 export function TeacherTopNavbarDropDown({ selected, setselected }) {
   const { user, checkAuth, logout, setAuthLoading } = useContext(GlobalContext);
 
- 
+  const tabs = [
+    {
+      id: 9,
+      title: "Account",
+      path: "/teacher/account",
+    },
+  ];
 
   const navigate = useNavigate();
 
@@ -37,7 +44,20 @@ export function TeacherTopNavbarDropDown({ selected, setselected }) {
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 bg-white">
-      
+        {tabs.map((tab, index) => {
+          return (
+            <DropdownMenuItem
+              key={index}
+              className={
+                selected == tab.id &&
+                "bg-green-500 hover:bg-green-600 text-white"
+              }
+              asChild
+            >
+              <Link to={tab.path}>{tab.title}</Link>
+            </DropdownMenuItem>
+          );
+        })}
         <DropdownMenuItem asChild>
           <button onClick={() => handleLogout()}>Logout</button>
         </DropdownMenuItem>
