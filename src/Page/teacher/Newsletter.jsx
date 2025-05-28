@@ -15,18 +15,27 @@ const Newsletter = () => {
       });
   }, []);
 
-  const handleMailClick = () => {
+  const downloadCSV = () => {
+    // Extract the email addresses
     const emails = subscribers
       .map(subscriber => subscriber.email)
-      .filter(email => !!email)
-      .join(',');
+      .filter(email => !!email);
 
-    const subject = encodeURIComponent("Newsletter Update");
-    const body = encodeURIComponent("Dear subscriber,\n\nHere's the latest update from our newsletter...");
+    // Prepare the CSV content
+    const csvContent = "data:text/csv;charset=utf-8," 
+      + "Email\n"  // Add a header for the CSV file
+      + emails.map(email => `${email}`).join("\n");
 
-    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&bcc=${encodeURIComponent(emails)}&su=${subject}&body=${body}`;
+    // Create a download link
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "subscribers.csv");
+    document.body.appendChild(link);
 
-    window.open(gmailUrl, '_blank');
+    // Trigger the download
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -34,10 +43,10 @@ const Newsletter = () => {
       <h1 className="text-2xl font-semibold mb-4">Newsletter Subscribers</h1>
       
       <button 
-        onClick={handleMailClick}
-        className="mb-4 px-4 py-2 bg-blue-500 text-white font-semibold rounded-md"
+        onClick={downloadCSV}
+        className="mb-4 px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-md"
       >
-        Mail
+        Download Emails as CSV
       </button>
       
       <div className="overflow-x-auto shadow-lg rounded-lg">
