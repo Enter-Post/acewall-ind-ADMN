@@ -41,7 +41,9 @@ function DeshBoardCard({ mainHeading, data, link, height }) {
                       </p>
                     ) : (
                       <>
-                        <p className="font-semibold text-gray-800">{item.course}</p>
+                        <p className="font-semibold text-gray-800">
+                          {item.course}
+                        </p>
                         <p className="text-sm text-gray-600">{item.title}</p>
                       </>
                     )}
@@ -59,12 +61,13 @@ function DeshBoardCard({ mainHeading, data, link, height }) {
               </div>
             ))
           ) : (
-            <div className="text-center text-sm text-gray-500 py-10">No data available.</div>
+            <div className="text-center text-sm text-gray-500 py-10">
+              No data available.
+            </div>
           )}
         </div>
       </CardContent>
     </Card>
-
   );
 }
 
@@ -217,16 +220,16 @@ const StudentCard = ({ student }) => {
           <span className="text-right font-medium text-gray-800">
             {new Date(student.createdAt).toLocaleDateString()}
           </span>
-
-          
         </div>
 
-        <Button
-          className="w-full bg-green-600 hover:bg-green-700 text-white"
-          type="button"
-        >
-          View Profile
-        </Button>
+        <Link key={student._id} to={`/admin/studentProfile/${student._id}`}>
+          <Button
+            className="w-full bg-green-600 hover:bg-green-700 text-white"
+            type="button"
+          >
+            View Profile
+          </Button>
+        </Link>
       </CardContent>
     </Card>
   );
@@ -248,7 +251,9 @@ const TeacherCard = ({ teacher, onViewProfile }) => (
       <h3 className="text-lg font-semibold text-gray-800">
         {teacher.firstName ?? "Unnamed"} {teacher.lastName ?? ""}
       </h3>
-      <p className="text-sm text-gray-500 truncate max-w-[200px]">{teacher.email ?? "No email"}</p>
+      <p className="text-sm text-gray-500 truncate max-w-[200px]">
+        {teacher.email ?? "No email"}
+      </p>
 
       <div className="w-full mt-4 space-y-1 text-sm text-gray-600">
         <div className="flex justify-between">
@@ -274,9 +279,6 @@ const TeacherCard = ({ teacher, onViewProfile }) => (
     </CardContent>
   </Card>
 );
-
-
-
 
 const TransactionCard = ({ title, data }) => (
   <Card className="h-fit p-0 gap-3 rounded mt-5">
@@ -391,10 +393,9 @@ const LandingPageCard = ({ name, description, imageUrl, buttonUrl }) => {
   );
 };
 
-
 function StudentProfileCourseCard({ course }) {
   return (
-    <Link to={`/teacher/courses/courseDetail/${course._id}`} className="w-full">
+    <Link to={`/admin/courses/courseDetail/${course._id}`} className="w-full">
       <Card className="p-4 flex flex-row items-center gap-4 shadow-sm hover:shadow-md transition-shadow duration-300 cursor-pointer">
         <div className="w-full sm:w-36 h-24 rounded-md overflow-hidden shrink-0">
           <img
@@ -413,10 +414,6 @@ function StudentProfileCourseCard({ course }) {
   );
 }
 
-
-
-
-
 function StudentProfileStatCard({ title, value, icon }) {
   return (
     <Card className="p-6 flex items-center w-full gap-4 shadow-sm">
@@ -425,7 +422,7 @@ function StudentProfileStatCard({ title, value, icon }) {
       >
         {icon}
       </div>
-      <div >
+      <div>
         <p className="text-gray-500">{title}</p>
         <p className="text-3xl font-bold text-center">{value}</p>
       </div>
@@ -440,7 +437,7 @@ function TeacherProfileStatCard({ title, value, icon }) {
       >
         {icon}
       </div>
-      <div >
+      <div>
         <p className="text-gray-500">{title}</p>
         <p className="text-3xl font-bold text-center">{value}</p>
       </div>
@@ -505,5 +502,5 @@ export {
   StudentProfileStatCard,
   MyCoursesCard,
   TeacherProfileStatCard,
-  TeacherCard
+  TeacherCard,
 };

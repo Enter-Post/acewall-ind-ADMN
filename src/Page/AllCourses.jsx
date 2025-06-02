@@ -56,7 +56,7 @@ const AllCourses = () => {
       {loading ? (
         <div className="flex justify-center items-center py-10">
           <section className="flex justify-center items-center h-full w-full">
-            <Loader size={48} className={"animate-spin"} />
+            <Loader className={"animate-spin"} />
           </section>
         </div>
       ) : allCourses?.length === 0 ? (
@@ -99,7 +99,7 @@ const AllCourses = () => {
             {loading ? (
               <div className="flex justify-center items-center py-10 ">
                 <section className="flex justify-center items-center h-full w-full">
-                  <Loader size={48} className={"animate-spin"} />
+                  <Loader className={"animate-spin"} />
                 </section>
               </div>
             ) : allCourses?.length === 0 ? (
@@ -141,7 +141,7 @@ const AllCourses = () => {
                 {allCourses.map((course) => (
                   <Link
                     key={course._id}
-                    to={`/student/course/detail/${course._id}`}
+                    to={`/admin/course/detail/${course._id}`}
                   >
                     <Card className="pb-6 pt-0 w-full h-full overflow-hidden cursor-pointer">
                       <AspectRatio ratio={16 / 9}>

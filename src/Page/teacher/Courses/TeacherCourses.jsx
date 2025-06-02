@@ -14,31 +14,31 @@ const TeacherCourses = () => {
   const [loading, setLoading] = useState(false);
   const { user } = useContext(GlobalContext);
 
+  console.log(allCourses, "allCourses");
+
   const searching = searchQuery.trim() !== "";
 
   useEffect(() => {
-    setLoading(true);
-    const delayDebounce = setTimeout(() => {
-      const getCourses = async () => {
+    const timeoutId = setTimeout(() => {
+      const fetchCourses = async () => {
+        setLoading(true);
         try {
-          const response = await axiosInstance.get(
-            "/course/all",
-            {
-              params: { search: searchQuery },
-            }
-          );
-          setAllCourses(response.data.courses);
+          const res = await axiosInstance.get("/course/getindividualcourse", {
+            params: { search: searchQuery },
+          });
+          setAllCourses(res.data.courses); // Corrected 'response' to 'res'
         } catch (error) {
           console.error("Error fetching courses:", error);
-          setAllCourses([]);
+          setAllCourses([]); // Corrected 'setEnrollment' to 'setAllCourses'
         } finally {
           setLoading(false);
         }
       };
-      getCourses();
-    }, 2000); // 500ms delay
 
-    return () => clearTimeout(delayDebounce); // cleanup
+      fetchCourses();
+    }, 500); // debounce delay
+
+    return () => clearTimeout(timeoutId); // cleanup
   }, [searchQuery]);
 
   return (
@@ -51,11 +51,12 @@ const TeacherCourses = () => {
         </div>
         <SearchBox query={searchQuery} setQuery={setSearchQuery} />
       </div>
+      <Link to={"/admin/courses/gradescale"}></Link>
 
       {loading ? (
         <div className="flex justify-center items-center py-10">
           <section className="flex justify-center items-center h-full w-full">
-            <Loader size={48} className={"animate-spin"} />
+            <Loader className={"animate-spin"} />
           </section>
         </div>
       ) : allCourses?.length === 0 ? (
@@ -84,7 +85,7 @@ const TeacherCourses = () => {
               <h1 className="text-xl md:text-2xl lg:text-4xl font-semibold text-center text-muted-foreground">
                 LET'S EDUCATE THE FUTURE
               </h1>
-              <Link to="/teacher/courses/createCourses">
+              <Link to="/admin/courses/createCourses">
                 <Button className="mt-8 py-2 px-4 rounded-md text-lg bg-green-500 text-white hover:bg-acewall-main/90 flex items-center gap-2">
                   Create Courses
                   <svg
@@ -119,7 +120,7 @@ const TeacherCourses = () => {
           {allCourses?.map((course) => (
             <Link
               key={course._id}
-              to={`/teacher/courses/courseDetail/${course._id}`}
+              to={`/admin/courses/courseDetail/${course._id}`}
             >
               <Card className="pb-6 pt-0 w-full overflow-hidden cursor-pointer">
                 <AspectRatio ratio={16 / 9}>

@@ -13,7 +13,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-import { Loader, Play, Users } from "lucide-react";
+import { BookOpen, Languages, Loader, Play, Users } from "lucide-react";
 import { axiosInstance } from "@/lib/AxiosInstance";
 import { CheckCircle } from "lucide-react";
 import CommentSection from "@/CustomComponent/Student/CommentSection";
@@ -22,6 +22,7 @@ import ChapterCreationModal from "@/CustomComponent/CreateCourse/CreatChapterMod
 import ChapterDetail from "@/CustomComponent/CreateCourse/ChapterDetail";
 import { FinalCourseAssessmentCard } from "@/CustomComponent/CreateCourse/FinalCourseAssessmentCard";
 import { toast } from "sonner";
+import RatingSection from "@/CustomComponent/Rating-section";
 
 export default function TeacherCourseDetails() {
   const { id } = useParams() || { id: "68115952b4991f70a28c486f" }; // Default ID or from URL
@@ -32,7 +33,6 @@ export default function TeacherCourseDetails() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-
   const [openLessons, setOpenLessons] = useState({});
 
   const toggleLesson = (lessonId) => {
@@ -54,7 +54,7 @@ export default function TeacherCourseDetails() {
         setLoading(false);
         toast.error(err.response?.data?.message || "Error deleting assessment");
       });
-  };// Delete Assessment
+  }; // Delete Assessment
   const fetchCourseDetail = async () => {
     await axiosInstance
       .get(`course/details/${id}`)
@@ -76,7 +76,7 @@ export default function TeacherCourseDetails() {
     return (
       <div>
         <section className="flex justify-center items-center h-full w-full">
-          <Loader size={48} className={"animate-spin"} />
+          <Loader className={"animate-spin"} />
         </section>
       </div>
     );
@@ -141,40 +141,42 @@ export default function TeacherCourseDetails() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatCard
-            icon={<Play className="h-5 w-5  text-orange-500" />}
-            value={course.language?.toUpperCase()}
-            label="Language"
-            bgColor="bg-orange-50"
-          />
-          <StatCard
-            icon={<Play className="h-5 w-5 text-orange-500" />}
-            value={course.category?.title?.toUpperCase()}
-            label="Category"
-            bgColor="bg-orange-50"
-          />
-
-          <StatCard
-            icon={<Play className="h-5 w-5 text-orange-500" />}
-            value={
-              course.chapters?.reduce(
-                (total, chapter) => total + chapter.lessons?.length,
-                0
-              ) || 0
+            icon={
+              <Languages className="h-6 w-6 text-green-600 bg-green-100 p-1.5 rounded-md" />
             }
-            label="Lessons"
-            bgColor="bg-orange-50"
+            value={course.language?.toUpperCase() || "N/A"}
+            label="Language"
+            bgColor="bg-gray-100 shadow-sm hover:shadow-md transition duration-300"
           />
           <StatCard
-            icon={<Users className="h-5 w-5 text-rose-500" />}
-            value={course.student?.length}
+            icon={
+              <Play className="h-6 w-6 text-orange-600 bg-orange-100 p-1.5 rounded-md" />
+            }
+            value={course?.category?.title?.toUpperCase() || "N/A"}
+            label="Category"
+            bgColor="bg-gray-100 shadow-sm hover:shadow-md transition duration-300"
+          />
+          <StatCard
+            icon={
+              <BookOpen className="h-6 w-6 text-blue-600 bg-blue-100 p-1.5 rounded-md" />
+            }
+            value={course?.chapters?.length || 0}
+            label={course?.chapters?.length === 1 ? "Chapter" : "Chapters"}
+            bgColor="bg-gray-100 shadow-sm hover:shadow-md transition duration-300"
+          />
+          <StatCard
+            icon={
+              <Users className="h-6 w-6 text-rose-600 bg-rose-100 p-1.5 rounded-md" />
+            }
+            value={course?.enrollments?.length || 0}
             label="Students Enrolled"
-            bgColor="bg-rose-50"
+            bgColor="bg-gray-100 shadow-sm hover:shadow-md transition duration-300"
           />
         </div>
-        <div className="flex justify-between items-center">
-        </div>
+
+        <div className="flex justify-between items-center"></div>
 
         {/* chapter detail */}
         <ChapterDetail
@@ -187,61 +189,14 @@ export default function TeacherCourseDetails() {
         {Array.isArray(course.finalAssessments) &&
           course.finalAssessments.map((assessment) => (
             <FinalCourseAssessmentCard
-              key={assessment._id}  // Use unique id as key
+              key={assessment._id} // Use unique id as key
               assessment={assessment}
               handleDeleteAssessment={handleDeleteAssessment}
             />
           ))}
 
         {/* Rating */}
-        <div className="my-10 ">
-          <h3 className="text-lg font-medium mb-4">Overall Course Rating</h3>
-          <div className="bg-green-50 p-8 rounded-lg flex flex-col items-center">
-            {course.rating && course.rating.length > 0 ? (
-              <>
-                <div className="text-5xl font-semibold mb-4">
-                  {(course.averageRating || 4.8).toFixed(1)}
-                </div>
-                <div className="flex items-center gap-1 mb-2">
-                  {[1, 2, 3, 4, 5].map((star, index) => {
-                    const fullStar =
-                      index + 1 <= Math.floor(course.averageRating || 5);
-                    const halfStar =
-                      index + 1 === Math.floor(course.averageRating || 5) + 0.5;
-                    return (
-                      <svg
-                        key={index}
-                        className={`w-6 h-6 ${fullStar
-                          ? "text-orange-400"
-                          : halfStar
-                            ? "text-yellow-500"
-                            : "text-gray-300"
-                          }`}
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          d={
-                            halfStar
-                              ? "M10 2L8.618 6.268L4 7.618L7.09 10.118L6 14L10 11.5L14 14L12.91 10.118L16"
-                              : "M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                          }
-                        />
-                      </svg>
-                    );
-                  })}
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  Course Rating
-                </div>
-              </>
-            ) : (
-              <div className="text-lg font-medium text-gray-500">
-                No ratings available
-              </div>
-            )}
-          </div>
-        </div>
+        <RatingSection courseId={id} />
       </div>
 
       <CommentSection id={id} />

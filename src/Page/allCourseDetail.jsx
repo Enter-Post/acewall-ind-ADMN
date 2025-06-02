@@ -70,7 +70,7 @@ const AllCoursesDetail = () => {
     return (
       <div className="flex justify-center items-center py-10">
         <section className="flex justify-center items-center h-full w-full">
-          <Loader size={48} className="animate-spin text-primary" />
+          <Loader className="animate-spin text-primary" />
         </section>
       </div>
     );

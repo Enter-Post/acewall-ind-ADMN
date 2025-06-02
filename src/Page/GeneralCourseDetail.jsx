@@ -49,7 +49,7 @@ const GeneralCourseDetail = () => {
     return (
       <div className="flex justify-center items-center py-10">
         <section className="flex justify-center items-center h-full w-full">
-          <Loader size={48} className="animate-spin text-primary" />
+          <Loader lassName="animate-spin text-primary" />
         </section>
       </div>
     ); if (!courseDetails) return <div className="p-6 text-red-500">Course not found.</div>;

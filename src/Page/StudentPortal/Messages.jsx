@@ -32,7 +32,7 @@ const Messages = () => {
               {loading ? (
                 <div className="flex justify-center items-center py-10">
                   <section className="flex justify-center items-center h-full w-full">
-                    <Loader size={48} className="animate-spin text-acewall-main" />
+                    <Loader className="animate-spin text-acewall-main" />
                   </section>
                 </div>
               ) : (

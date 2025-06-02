@@ -15,7 +15,7 @@ const AllStudent = () => {
           ? res.data
           : res.data.users || [];
         console.log(res);
-        
+
         const normalized = rawStudents.map((s, i) => {
           const cleanName = s.name?.replace(/<[^>]+>/g, "").trim() || "Unknown";
           const nameParts = cleanName.split(/\s+/);
@@ -63,12 +63,7 @@ const AllStudent = () => {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {students.map((student) => (
-            <Link
-              key={student._id}
-              to={`/teacher/studentProfile/${student._id}`}
-            >
-              <StudentCard student={student} />
-            </Link>
+            <StudentCard student={student} />
           ))}
         </div>
       )}

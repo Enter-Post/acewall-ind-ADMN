@@ -56,7 +56,7 @@ const GeneralCourses = () => {
         {loading ? (
           <div className="flex justify-center items-center py-10 ">
             <section className="flex justify-center items-center h-full w-full">
-              <Loader size={48} className={"animate-spin"} />
+              <Loader className={"animate-spin"} />
             </section>
           </div>
         ) : allCourses?.length === 0 ? (

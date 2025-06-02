@@ -82,14 +82,14 @@ const Category = () => {
         <h1 className="text-2xl font-semibold">Categories</h1>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="flex items-center gap-2">
+            <Button className="flex items-center gap-2 bg-green-500 hover:bg-green-600">
               <Plus size={18} />
               Add New Category
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add New Category</DialogTitle>
+              <DialogTitle >Add New Category</DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
               <Label htmlFor="categoryName">Category Name</Label>
@@ -99,7 +99,7 @@ const Category = () => {
                 onChange={(e) => setNewCategoryName(e.target.value)}
                 placeholder="e.g. Business"
               />
-              <Button onClick={handleAddCategory} className="w-full">
+              <Button onClick={handleAddCategory} className="w-full bg-green-500 hover:bg-green-600">
                 Add Category
               </Button>
             </div>
@@ -111,7 +111,7 @@ const Category = () => {
         <CardContent className="p-4">
           {loading ? (
             <div className="flex justify-center items-center py-10">
-              <Loader size={48} className="animate-spin text-primary" />
+              <Loader className="animate-spin " />
             </div>
           ) : categories.length === 0 ? (
             <div className="text-center text-gray-500 py-8">
@@ -133,7 +133,7 @@ const Category = () => {
                     <TableCell>
                       <button
                         onClick={() =>
-                          navigate(`/teacher/subcategory/${encodeURIComponent(cat.title)}`)
+                          navigate(`/admin/subcategory/${encodeURIComponent(cat.title)}`)
                         }
                         className="text-blue-600 hover:underline cursor-pointer"
                       >

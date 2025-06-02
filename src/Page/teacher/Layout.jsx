@@ -14,6 +14,7 @@ import {
   Headset,
   School,
   Mails,
+  BookPlus,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Button } from "../../components/ui/button";
@@ -27,57 +28,66 @@ import { useContext } from "react";
 import { GlobalContext } from "@/Context/GlobalProvider";
 import { useState } from "react";
 
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import { axiosInstance } from "@/lib/AxiosInstance";
 const sideBarTabs = [
   {
     id: 1,
     name: "Dashboard",
     icon: <DashboardCircleAddIcon />,
-    path: "/teacher",
+    path: "/admin",
   },
-  { id: 2, name: "All Courses", icon: <Book02Icon />, path: "/teacher/courses" },
+  { id: 2, name: "All Courses", icon: <Book02Icon />, path: "/admin/courses" },
+  {
+    id: 3,
+    name: "Grade Scale",
+    icon: <BookPlus />,
+    path: "/admin/gradescale",
+  },
 
- 
   {
     id: 5,
     name: "Category",
     icon: <Megaphone02Icon />,
-    path: "/teacher/Category",
+    path: "/admin/Category",
   },
- 
+
   {
     id: 13,
     name: "Teachers",
     icon: <Users />,
-    path: "/teacher/allTeacher",
+    path: "/admin/allTeacher",
   },
   {
     id: 13,
     name: "Students",
     icon: <GraduationCap />,
-    path: "/teacher/allStudent",
+    path: "/admin/allStudent",
   },
   {
     id: 13,
     name: "Support",
     icon: <Headset />,
-    path: "/teacher/support",
+    path: "/admin/support",
   },
   {
     id: 13,
     name: "SchoolProfile",
     icon: <School />,
-    path: "/teacher/SchoolProfile",
+    path: "/admin/SchoolProfile",
   },
   {
     id: 13,
     name: "Newsletter",
     icon: <Mails />,
-    path: "/teacher/Newsletter",
+    path: "/admin/Newsletter",
   },
 ];
-
 
 export default function TeacherLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -90,10 +100,6 @@ export default function TeacherLayout() {
   const [dropdownCourses, setDropdownCourses] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [openDropdown, setOpenDropdown] = React.useState(false);
-
-
-
-
 
   const handleSearch = async () => {
     if (!searchQuery.trim() || loading) return;
@@ -117,10 +123,6 @@ export default function TeacherLayout() {
     }
   };
 
-
-
-
-
   return (
     <div className="flex flex-col">
       <header className="sticky top-0 z-10 bg-white">
@@ -137,14 +139,14 @@ export default function TeacherLayout() {
             <Menu className="h-6 w-6" />
             <span className="sr-only">Toggle Sidebar</span>
           </Button>
-          <Link to="/teacher" className="block md:hidden">
+          <Link to="/admin" className="block md:hidden">
             <img
               src={acewallshort}
               alt="Mobile Logo"
               className="w-8 rounded-full h-auto cursor-pointer"
             />
           </Link>
-          <Link to="/teacher" className="hidden md:block">
+          <Link to="/admin" className="hidden md:block">
             <img
               src={acewallscholarslogo}
               alt="Desktop Logo"
@@ -152,17 +154,16 @@ export default function TeacherLayout() {
             />
           </Link>
           <div className="flex justify-between items-center">
-
-            <div className="flex gap-6">
-
-
-
-            </div>
+            <div className="flex gap-6"></div>
           </div>
 
           {/* Search Dropdown */}
-          <div className="relative w-64 hidden md:flex flex-col">
-            <DropdownMenu open={openDropdown} onOpenChange={setOpenDropdown} modal={false}>
+          {/* <div className="relative w-64 hidden md:flex flex-col">
+            <DropdownMenu
+              open={openDropdown}
+              onOpenChange={setOpenDropdown}
+              modal={false}
+            >
               <DropdownMenuTrigger asChild>
                 <div className="relative flex gap-2 w-full">
                   <Input
@@ -202,7 +203,7 @@ export default function TeacherLayout() {
                   dropdownCourses.map((course) => (
                     <DropdownMenuItem asChild key={course._id}>
                       <Link
-                        to={`/teacher/courses/courseDetail/${course._id}`}
+                        to={`/admin/courses/courseDetail/${course._id}`}
                         onClick={() => setOpenDropdown(false)}
                         className="w-full block text-sm text-gray-800 hover:bg-gray-100 px-2 py-1 rounded"
                       >
@@ -212,22 +213,22 @@ export default function TeacherLayout() {
                   ))
                 ) : (
                   <DropdownMenuItem disabled>
-                    <span className="text-sm text-gray-500">No results found</span>
+                    <span className="text-sm text-gray-500">
+                      No results found
+                    </span>
                   </DropdownMenuItem>
                 )}
               </DropdownMenuContent>
             </DropdownMenu>
-          </div>
-
-
-
+          </div> */}
         </div>
       </header>
 
       <div className="flex flex-1 overflow-hidden">
         <aside
-          className={`bg-white ${isSidebarOpen ? "block" : "hidden"
-            } w-screen md:w-64 flex-shrink-0 overflow-y-auto md:block`}
+          className={`bg-white ${
+            isSidebarOpen ? "block" : "hidden"
+          } w-screen md:w-64 flex-shrink-0 overflow-y-auto md:block`}
         >
           <div className="p-4">
             <div className="flex items-center space-x-3 pb-4">
@@ -254,13 +255,15 @@ export default function TeacherLayout() {
                   onClick={() => {
                     setIsSidebarOpen(false);
                   }}
-                  className={`flex items-center space-x-3 rounded-lg px-3 py-2 ${location == tab.path ? "bg-green-500" : "text-black"
-                    } `}
+                  className={`flex items-center space-x-3 rounded-lg px-3 py-2 ${
+                    location == tab.path ? "bg-green-500" : "text-black"
+                  } `}
                 >
                   <p>{tab.icon}</p>
                   <span
-                    className={`${location == tab.path ? "text-white" : "text-green-600"
-                      }`}
+                    className={`${
+                      location == tab.path ? "text-white" : "text-green-600"
+                    }`}
                   >
                     {tab.name}
                   </span>
