@@ -26,9 +26,9 @@ export default function StudentProfile() {
     const getUser = async () => {
       setLoading(true);
       try {
-        const res = await axiosInstance.get(`/admin/user/${id}`);
-        setStudentInfo(res.data);
-        console.log(res);
+        const res = await axiosInstance.get(`/admin/getStudentById/${id}`);
+        setStudentInfo(res.data.user);
+        console.log("user response",res);
       } catch (err) {
         console.error("Error fetching student profile:", err);
       } finally {
@@ -91,14 +91,7 @@ export default function StudentProfile() {
               <Mail className="w-4 h-4 text-gray-500" />
               <span>{studentInfo?.email}</span>
             </div>
-            <div className="flex items-center justify-center md:justify-start gap-2">
-              <Phone className="w-4 h-4 text-gray-500" />
-              <span>{studentInfo?.phone || "N/A"}</span>
-            </div>
-            <div className="flex items-center justify-center md:justify-start gap-2">
-              <MapPin className="w-4 h-4 text-gray-500" />
-              <span>{studentInfo?.homeAddress || "N/A"}</span>
-            </div>
+           
             <div className="flex items-center justify-center md:justify-start gap-2">
               <Calendar className="w-4 h-4 text-gray-500" />
               <span>Joined: {new Date(studentInfo?.createdAt).toLocaleDateString()}</span>

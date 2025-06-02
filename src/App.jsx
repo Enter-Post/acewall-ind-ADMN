@@ -99,7 +99,7 @@ function App() {
           element={
             <PublicRoute
               user={user}
-              redirectTo={user?.role === "admin" ? "/admin" : "/teacher"}
+              redirectTo={user?.role === "admin" ? "/admin" : "/admin"}
             />
           }
         >

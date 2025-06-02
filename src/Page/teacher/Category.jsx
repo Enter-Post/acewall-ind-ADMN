@@ -51,14 +51,21 @@ const Category = () => {
     try {
       const counts = {};
       for (const cat of categories) {
+        console.log("Fetching subcategories for:", cat._id); 
         const res = await axiosInstance.get(`/category/subcategories/${cat._id}`);
         counts[cat._id] = res.data.subcategories.length;
       }
+      console.log("Subcategory counts:", counts);
       setSubCountMap(counts);
     } catch (error) {
-      console.error("Error fetching subcategory counts:", error);
+      console.error("Error fetching subcategory counts:", {
+        message: error.message,
+        url: error.config?.url,
+        responseData: error.response?.data,
+      });
     }
   };
+
 
   const handleAddCategory = async () => {
     if (!newCategoryName.trim()) return;

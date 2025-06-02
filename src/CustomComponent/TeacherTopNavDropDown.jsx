@@ -20,11 +20,12 @@ export function TeacherTopNavbarDropDown({ selected, setselected }) {
     {
       id: 9,
       title: "Account",
-      path: "/teacher/account",
+      path: "/admin/account",
     },
   ];
 
   const navigate = useNavigate();
+  console.log(user);
 
   const handleLogout = async () => {
     logout();
@@ -40,7 +41,7 @@ export function TeacherTopNavbarDropDown({ selected, setselected }) {
             <AvatarImage src={user.profileImg} alt="User Avatar" />
             <AvatarFallback>U</AvatarFallback>
           </Avatar>
-          <p className="text-white flex items-center">{user.firstName}</p>
+          <p className="text-white flex items-center">Admin</p>
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 bg-white">

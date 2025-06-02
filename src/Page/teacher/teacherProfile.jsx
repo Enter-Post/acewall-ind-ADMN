@@ -17,8 +17,10 @@ export default function TeacherProfile() {
     const fetchTeacher = async () => {
       setTeacherLoading(true);
       try {
-        const res = await axiosInstance.get(`/admin/user/${id}`);
-        setTeacherInfo(res.data);
+        const res = await axiosInstance.get(`/admin/getTeacherById/${id}`);
+        setTeacherInfo(res.data.teacher);
+        console.log(res);
+        
       } catch (err) {
         console.error("Failed to fetch teacher:", err);
         setTeacherInfo(null);
@@ -130,7 +132,7 @@ export default function TeacherProfile() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {teacherCourses.map((course, idx) => (
               <Link
-                to={`/teacher/courses/courseDetail/${course._id}`}
+                to={`/admin/courses/courseDetail/${course._id}`}
                 key={idx}
                 className="rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow duration-300 cursor-pointer block"
               >
