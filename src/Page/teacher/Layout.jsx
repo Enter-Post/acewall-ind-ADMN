@@ -4,22 +4,15 @@ import acewallscholarslogo from "../../assets/acewallscholarslogo.webp";
 import acewallshort from "../../assets/acewallshort.png";
 import {
   Menu,
-  MessageCircleDashed,
-  Search,
-  BadgePlus,
-  DollarSign,
   GraduationCap,
-  Wallet,
   Users,
   Headset,
   School,
   Mails,
   BookPlus,
 } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Button } from "../../components/ui/button";
 import { TeacherTopNavbarDropDown } from "@/CustomComponent/TeacherTopNavDropDown";
-import { Input } from "../../components/ui/input";
 import { DashboardCircleAddIcon } from "@/assets/Icons/deshboard";
 import { Book02Icon } from "@/assets/Icons/mycoursesIcon";
 import { Megaphone02Icon } from "@/assets/Icons/Announcement";
@@ -232,19 +225,10 @@ export default function TeacherLayout() {
         >
           <div className="p-4">
             <div className="flex items-center space-x-3 pb-4">
-              <Link to="/teacher/account" className="w-10">
-                <Avatar>
-                  <AvatarImage
-                    className="rounded-full"
-                    src={user.profileImg}
-                    alt="@user"
-                  />
-                  <AvatarFallback>UN</AvatarFallback>
-                </Avatar>
-              </Link>
+             
               <div>
                 <p className="font-medium">{user.firstName}</p>
-                <p className="text-sm text-gray-600">{user.email}</p>
+                <p className="text-md text-gray-600 ml-5">{user.email}</p>
               </div>
             </div>
             <nav className="space-y-2">

@@ -29,6 +29,7 @@ const Subcategory = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [categoryId, setCategoryId] = useState(null);
   const navigate = useNavigate();
+  const [error, setError] = useState("");
 
   const fetchCategoryId = async () => {
     try {
@@ -52,21 +53,22 @@ const Subcategory = () => {
       // Store full subcategory objects for id & title
       setSubcategories(data.subcategories);
       console.log(data);
-      
+
     } catch (err) {
       console.error("Error fetching subcategories:", err);
     }
   };
 
+
   const handleAddSubcategory = async () => {
     if (!newSub.trim()) return;
+
     try {
       const { data } = await axiosInstance.post("/subcategory/create", {
         title: newSub,
         category: categoryId,
       });
 
-      // Add new subcategory object returned from backend
       setSubcategories((prev) =>
         [...prev, data.subcategory].sort((a, b) =>
           a.title.localeCompare(b.title)
@@ -75,10 +77,17 @@ const Subcategory = () => {
 
       setNewSub("");
       setDialogOpen(false);
+      setError(""); // clear any previous error
     } catch (err) {
-      console.error("Error creating subcategory:", err);
+      if (err.response?.status === 400) {
+        setError(err.response.data.message);
+      } else {
+        console.error("Error creating subcategory:", err);
+        setError("An unexpected error occurred.");
+      }
     }
   };
+
 
   // DELETE handler
   const handleDeleteSubcategory = async (id) => {
@@ -133,10 +142,12 @@ const Subcategory = () => {
                 onChange={(e) => setNewSub(e.target.value)}
                 placeholder="e.g. Web Development"
               />
+              {error && <p className="text-red-500 text-sm">{error}</p>}
               <Button onClick={handleAddSubcategory} className="w-full">
                 Add
               </Button>
             </div>
+
           </DialogContent>
         </Dialog>
       </div>

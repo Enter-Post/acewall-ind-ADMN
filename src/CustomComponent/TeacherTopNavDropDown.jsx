@@ -25,7 +25,7 @@ export function TeacherTopNavbarDropDown({ selected, setselected }) {
   ];
 
   const navigate = useNavigate();
-  console.log(user);
+  // console.log(user);
 
   const handleLogout = async () => {
     logout();

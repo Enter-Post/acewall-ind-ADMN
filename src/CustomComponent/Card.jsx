@@ -199,7 +199,7 @@ const StudentCard = ({ student }) => {
       <CardContent className="px-6 py-5 flex flex-col items-center text-center space-y-4">
         <Avatar className="w-24 h-24 ring-2 ring-gray-300 shadow-sm">
           <AvatarImage
-            src={student.profileImg}
+            src={student.profileImg.url}
             alt={`${student.firstName} ${student.lastName}`}
             className="rounded-full object-cover"
           />
@@ -239,7 +239,7 @@ const TeacherCard = ({ teacher, onViewProfile }) => (
     <CardContent className="p-6 flex flex-col items-center text-center">
       <Avatar className="w-24 h-24 ring-4 ring-green-500 shadow-md mb-4">
         <AvatarImage
-          src={teacher.profileImg}
+          src={teacher.profileImg.url}
           alt={`${teacher.firstName ?? "T"} ${teacher.lastName ?? ""}`}
           className="rounded-full object-cover w-full h-full"
         />

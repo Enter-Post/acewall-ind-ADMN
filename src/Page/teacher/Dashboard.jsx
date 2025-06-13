@@ -5,12 +5,9 @@ import {
   BookOpen,
   GraduationCap,
   Users,
-  MessageSquare,
   Grid2x2,
   Mail,
 } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { axiosInstance } from "@/lib/AxiosInstance";
 import { GlobalContext } from "@/Context/GlobalProvider";
@@ -21,7 +18,7 @@ export default function TeacherDashboard() {
   const [students, setStudents] = useState([]);
   const [Teachers, setTeachers] = useState([]);
   const [totalCategories, setTotalCategories] = useState(0);
-    const [totalSubscribers, setTotalSubscribers] = useState(0);
+  const [totalSubscribers, setTotalSubscribers] = useState(0);
 
 
   const [recentActivity, setRecentActivity] = useState([]);
@@ -65,7 +62,7 @@ export default function TeacherDashboard() {
       .catch(console.error);
   }, []);
 
-useEffect(() => {
+  useEffect(() => {
     axiosInstance("/newsletter/subscribers")
       .then((res) => {
         setTotalSubscribers(res.data.length || 0); // Assuming `res.data` is an array of subscribers
@@ -78,29 +75,34 @@ useEffect(() => {
       title: "Courses",
       value: courses.length,
       icon: <BookOpen size={16} className="text-green-600" />,
+      link: "/admin/courses", // Route for courses
     },
     {
       title: "Total Students",
       value: students.length,
       icon: <GraduationCap size={16} className="text-green-600" />,
+      link: "/admin/allStudent", // Route for students
     },
     {
       title: "Total Teachers",
-      value: Teachers.length, // You can replace with separate user data if needed
+      value: Teachers.length,
       icon: <Users size={16} className="text-green-600" />,
+      link: "/admin/allTeacher", // Route for teachers
     },
     {
       title: "Total Categorys",
       value: totalCategories.length,
       icon: <Grid2x2 size={16} className="text-green-600" />,
+      link: "/admin/category", // Route for categories
     },
-     {
+    {
       title: "Total Subscribers",
       value: totalSubscribers,
       icon: <Mail size={16} className="text-green-600" />,
+      link: "/admin/newsletter", // Route for newsletter
     },
-   
   ];
+
 
   return (
     <div className="min-h-screen px-4 sm:px-6 lg:px-8">
@@ -111,19 +113,22 @@ useEffect(() => {
       {/* Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         {metrics.map((metric, idx) => (
-          <Card key={idx}>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm text-gray-500">{metric.title}</CardTitle>
-              <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                {metric.icon}
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{metric.value}</div>
-            </CardContent>
-          </Card>
+          <Link to={metric.link} key={idx}>
+            <Card className="cursor-pointer hover:shadow-lg transition">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm text-gray-500">{metric.title}</CardTitle>
+                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                  {metric.icon}
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{metric.value}</div>
+              </CardContent>
+            </Card>
+          </Link>
         ))}
       </div>
+
 
       {/* Activity and Recent Courses */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -136,7 +141,7 @@ useEffect(() => {
           </CardHeader>
           <CardContent className="space-y-4">
             {courses.slice(0, 3).map((course, i) => (
-              <Link href={`/teacher/courses/courseDetail/${course._id}`} key={i}>
+              <Link to={`/admin/courses/courseDetail/${course._id}`} key={i}>
                 <div className="flex gap-4 items-start border p-3 rounded-md bg-white hover:bg-gray-50 cursor-pointer">
                   <img
                     src={course.thumbnail?.url || "/placeholder.svg"}

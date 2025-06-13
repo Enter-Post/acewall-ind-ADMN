@@ -28,7 +28,7 @@ const DeleteCourseModal = ({
       // Wait 2 seconds before redirecting
       setTimeout(() => {
         setSuccessOpen(false);
-        window.location.href = "/teacher/courses";
+        window.location.href = "/admin/courses";
         fetchCourseDetail();
       }, 2000);
     } catch (error) {
