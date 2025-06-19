@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -26,6 +26,8 @@ import RatingSection from "@/CustomComponent/Rating-section";
 
 export default function TeacherCourseDetails() {
   const { id } = useParams() || { id: "68115952b4991f70a28c486f" }; // Default ID or from URL
+    const navigate = useNavigate();
+
   const [course, setCourse] = useState(null);
   const [open, setOpen] = useState(false);
   const [openChapter, setOpenChapter] = useState(null); // Default to no chapter open
@@ -126,7 +128,6 @@ export default function TeacherCourseDetails() {
                 id={id}
                 setSuccessOpen={setSuccessOpen}
               />
-
               {/* ✅ Success Confirmation Modal */}
               <Dialog open={successOpen} onOpenChange={setSuccessOpen}>
                 <DialogContent className="flex flex-col items-center justify-center text-center">
@@ -136,7 +137,18 @@ export default function TeacherCourseDetails() {
                   </h3>
                 </DialogContent>
               </Dialog>
+              <div>
+                <button
+                  className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded shadow-md transition-all duration-150 text-sm cursor-pointer"
+                  onClick={() =>
+                    navigate(`/admin/courses/generalcoursesdetailpage/${id}`)
+                  }
+                >
+                  Preview as a student
+                </button>
+              </div>
             </div>
+
           </div>
         </div>
 

@@ -212,8 +212,9 @@ const StudentCard = ({ student }) => {
           <h3 className="text-lg font-semibold text-gray-800">
             {student.firstName} {student.lastName}
           </h3>
-          <p className="text-sm text-gray-500">{student.email}</p>
-        </div>
+          <p className="text-sm text-gray-500 p-4 truncate max-w-[200px]">
+            {student.email ?? "No email"}
+          </p>        </div>
 
         <div className="w-full grid grid-cols-2 gap-y-1 gap-x-3 text-sm text-gray-600">
           <span>Joined</span>
@@ -237,7 +238,7 @@ const StudentCard = ({ student }) => {
 const TeacherCard = ({ teacher, onViewProfile }) => (
   <Card className="overflow-hidden rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-white border border-gray-200">
     <CardContent className="p-6 flex flex-col items-center text-center">
-      <Avatar className="w-24 h-24 ring-4 ring-green-500 shadow-md mb-4">
+      <Avatar className="w-24 h-24 shadow-md mb-4">
         <AvatarImage
           src={teacher.profileImg.url}
           alt={`${teacher.firstName ?? "T"} ${teacher.lastName ?? ""}`}

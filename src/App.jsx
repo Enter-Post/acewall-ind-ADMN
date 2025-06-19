@@ -17,7 +17,7 @@ import Support from "./Page/Support";
 
 // import GeneralCourses from "./Page/GeneralCourses";
 // import GeneralSupport from "./Page/GeneralSupport";
-// import GeneralCoursesDetail from "./Page/GeneralCourseDetail";
+import GeneralCoursesDetail from "./Page/teacher/Courses/GeneralCourseDetail";
 import TeacherDashboard from "./Page/teacher/Dashboard";
 import TeacherLayout from "./Page/teacher/Layout";
 // import TeacherAccount from "./Page/teacher/Account";
@@ -56,6 +56,7 @@ import SchoolProfile from "./Page/teacher/Schoolproile";
 import Newsletter from "./Page/teacher/Newsletter";
 import ManageGradeScale from "./Page/manageGradeScale";
 import GradeScaleForm from "./Page/GradeScale";
+import Semester from "./Page/teacher/Semester";
 
 function App() {
   const { checkAuth, user, Authloading, socket, setSocket, setOnlineUser } =
@@ -120,17 +121,18 @@ function App() {
             <Route path="studentProfile/:id" element={<StudentProfile />} />
             <Route path="teacherProfile/:id" element={<TeacherProfile />} />
             <Route path="support" element={<Support />} />
+            <Route path="semester" element={<Semester />} />
             <Route path="gradescale">
               <Route index element={<GradeScaleForm />} />
               <Route path="managegradescale" element={<ManageGradeScale />} />
+
             </Route>
             <Route path="courses">
               <Route index element={<TeacherCourses />} />
-              <Route
-                path="courseDetail/:id"
-                element={<TeacherCourseDetails />}
-              />
+              <Route path="courseDetail/:id" element={<TeacherCourseDetails />} />
+              <Route path="generalcoursesdetailpage/:id" element={<GeneralCoursesDetail />} />
             </Route>
+
           </Route>
         </Route>
       </Routes>

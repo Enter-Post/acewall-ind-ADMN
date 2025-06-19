@@ -78,14 +78,14 @@ export default function TeacherProfile() {
     <div className="max-w-5xl mx-auto p-8 bg-white rounded-xl shadow-lg">
       {/* Profile Section */}
       <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mb-12">
-        <Avatar className="w-28 h-28 ring-4 ring-green-400 shadow-md rounded-full">
+        <Avatar className="w-28 h-28 ring-2 ring-gray-300 shadow rounded-full overflow-hidden">
           <AvatarImage
-            src={teacherInfo.profileImg}
-            alt={`${firstName} ${lastName}`}
-            className="rounded-full object-cover h-full w-full"
+            src={teacherInfo.profileImg?.url}
+            alt={`${teacherInfo.firstName} ${teacherInfo.lastName}`}
+            className="w-full h-full object-cover rounded-full"
           />
-          <AvatarFallback className="bg-green-100 text-green-600 text-4xl font-bold flex items-center justify-center">
-            {firstName?.[0] ?? "T"}
+          <AvatarFallback className="w-full h-full bg-gray-200 text-gray-600 text-lg font-semibold flex items-center justify-center rounded-full">
+            {teacherInfo.firstName?.[0]?.toUpperCase() || "?"}
           </AvatarFallback>
         </Avatar>
 

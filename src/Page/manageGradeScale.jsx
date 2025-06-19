@@ -44,7 +44,7 @@ export default function ManageGradeScale() {
       .then((res) => {
         console.log(res);
         toast.success(res.data.message);
-        navigate("/admin/courses/gradescale");
+        navigate("/admin/gradescale");
       })
       .catch((err) => {
         console.log(err);

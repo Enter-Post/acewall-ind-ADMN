@@ -10,6 +10,7 @@ import {
   School,
   Mails,
   BookPlus,
+  NotebookPen,
 } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { TeacherTopNavbarDropDown } from "@/CustomComponent/TeacherTopNavDropDown";
@@ -79,6 +80,12 @@ const sideBarTabs = [
     name: "Newsletter",
     icon: <Mails />,
     path: "/admin/Newsletter",
+  },
+  {
+    id: 13,
+    name: "Semester",
+    icon: <NotebookPen />,
+    path: "/admin/Semester",
   },
 ];
 
