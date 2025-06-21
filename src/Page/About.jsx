@@ -66,6 +66,7 @@ const About = () => {
           }}
         ></div>
 
+
         {/* Overlay for subtle darkening */}
         <div className="absolute inset-0 bg-white/60 z-0"></div>
 
