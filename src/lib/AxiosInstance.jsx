@@ -4,7 +4,7 @@ const process = "development";
 
 const BASE_URL =
   process === "development"
-    ? "http://localhost:5050/api/"
+    ? "https://acewall-backend-school-instance-production.up.railway.app/api/"
     : "https://acewall-backend-1.vercel.app/api/";
 
 export const axiosInstance = axios.create({
