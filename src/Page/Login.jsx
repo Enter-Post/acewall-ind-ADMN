@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { GlobalContext } from "@/Context/GlobalProvider";
 
 const Login = () => {
-  const { login } = useContext(GlobalContext);
+  const { login, checkAuth } = useContext(GlobalContext);
   const [loginError, setLoginError] = useState("");
   const navigate = useNavigate();
 
@@ -28,6 +28,7 @@ const Login = () => {
       await login(formData);
       setLoginError("");
       navigate("/admin");
+      await checkAuth();
     } catch (error) {
       const errorMessage =
         error?.response?.data?.message || "Login failed. Please try again.";
@@ -45,7 +46,10 @@ const Login = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           {/* Email */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Email
             </label>
             <input
@@ -56,13 +60,18 @@ const Login = () => {
               className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400 placeholder:text-gray-500"
             />
             {errors.email && (
-              <p className="text-xs text-red-600 mt-1">{errors.email.message}</p>
+              <p className="text-xs text-red-600 mt-1">
+                {errors.email.message}
+              </p>
             )}
           </div>
 
           {/* Password */}
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Password
             </label>
             <input
@@ -73,7 +82,9 @@ const Login = () => {
               className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400 placeholder:text-gray-500"
             />
             {errors.password && (
-              <p className="text-xs text-red-600 mt-1">{errors.password.message}</p>
+              <p className="text-xs text-red-600 mt-1">
+                {errors.password.message}
+              </p>
             )}
           </div>
 
@@ -83,7 +94,6 @@ const Login = () => {
           )}
 
           {/* Actions */}
-         
 
           <button
             type="submit"

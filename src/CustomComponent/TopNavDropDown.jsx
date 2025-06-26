@@ -28,8 +28,8 @@ export function TopNavbarDropDown({ selected, setselected }) {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    logout();
-    checkAuth();
+    await logout();
+    await checkAuth();
     location.reload();
   };
 

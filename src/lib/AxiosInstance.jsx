@@ -1,14 +1,7 @@
 import axios from "axios";
 
-const process = "development";
-
-const BASE_URL =
-  process === "development"
-    ? "https://acewall-backend-school-instance-production.up.railway.app/api/"
-    : "https://acewall-backend-1.vercel.app/api/";
-
 export const axiosInstance = axios.create({
-  baseURL: BASE_URL,
+  baseURL: import.meta.env.VITE_BASE_URL || "http://localhost:5050/api/",
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
