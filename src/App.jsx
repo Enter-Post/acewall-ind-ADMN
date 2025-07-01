@@ -111,7 +111,7 @@ function App() {
         <Route element={<PrivateRoute user={user} allowedRole="admin" />}>
           <Route path="/admin" element={<TeacherLayout />}>
             <Route index element={<TeacherDashboard />} />
-            <Route path="account" element={<Account />} />
+            {/* <Route path="account" element={<Account />} /> */}
             <Route path="SchoolProfile" element={<SchoolProfile />} />
             <Route path="category" element={<Category />} />
             <Route path="subcategory/:categoryName" element={<Subcategory />} />

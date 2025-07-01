@@ -17,11 +17,11 @@ export function TeacherTopNavbarDropDown({ selected, setselected }) {
   const { user, checkAuth, logout, setAuthLoading } = useContext(GlobalContext);
 
   const tabs = [
-    {
-      id: 9,
-      title: "Account",
-      path: "/admin/account",
-    },
+    // {
+    //   id: 9,
+    //   title: "Account",
+    //   path: "/admin/account",
+    // },
   ];
 
   const navigate = useNavigate();
