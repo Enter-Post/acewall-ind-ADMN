@@ -39,54 +39,37 @@ const sideBarTabs = [
   { id: 2, name: "All Courses", icon: <Book02Icon />, path: "/admin/courses" },
   {
     id: 3,
-    name: "Grade Scale",
-    icon: <BookPlus />,
-    path: "/admin/gradescale",
-  },
-
-  {
-    id: 5,
     name: "Category",
     icon: <Megaphone02Icon />,
     path: "/admin/Category",
   },
 
   {
-    id: 13,
+    id: 4,
     name: "Teachers",
     icon: <Users />,
     path: "/admin/allTeacher",
   },
   {
-    id: 13,
+    id: 5,
     name: "Students",
     icon: <GraduationCap />,
     path: "/admin/allStudent",
   },
   {
-    id: 13,
+    id: 6,
     name: "Support",
     icon: <Headset />,
     path: "/admin/support",
   },
+ 
   {
-    id: 13,
-    name: "SchoolProfile",
-    icon: <School />,
-    path: "/admin/SchoolProfile",
-  },
-  {
-    id: 13,
+    id: 7,
     name: "Newsletter",
     icon: <Mails />,
     path: "/admin/Newsletter",
   },
-  {
-    id: 13,
-    name: "Semester",
-    icon: <NotebookPen />,
-    path: "/admin/Semester",
-  },
+  
 ];
 
 export default function TeacherLayout() {
