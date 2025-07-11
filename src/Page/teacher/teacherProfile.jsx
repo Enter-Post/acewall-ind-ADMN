@@ -5,6 +5,7 @@ import { Calendar, Mail, School } from "lucide-react";
 import { TeacherProfileStatCard } from "@/CustomComponent/Card";
 import { axiosInstance } from "@/lib/AxiosInstance";
 import { toast } from "sonner"; 
+import BackButton from "@/CustomComponent/BackButton";
 
 export default function TeacherProfile() {
   const { id } = useParams();
@@ -91,6 +92,8 @@ export default function TeacherProfile() {
 
   return (
     <div className="max-w-5xl mx-auto p-8 bg-white rounded-xl shadow-lg">
+      <BackButton label="Go Back" className="mb-4" />
+
       {/* Profile Section */}
       <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mb-12">
         <Avatar className="w-28 h-28 ring-2 ring-gray-300 shadow rounded-full overflow-hidden">

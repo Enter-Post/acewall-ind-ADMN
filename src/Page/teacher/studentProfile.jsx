@@ -11,6 +11,7 @@ import {
   StudentProfileStatCard,
 } from "@/CustomComponent/Card";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import BackButton from "@/CustomComponent/BackButton";
 
 export default function StudentProfile() {
   const { id } = useParams();
@@ -59,6 +60,7 @@ export default function StudentProfile() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10 bg-white rounded-xl shadow-md space-y-10">
+      <BackButton label="Go Back" className="mb-4" />
 
       {/* Profile Header */}
       <div className="flex flex-col md:flex-row items-center md:items-start gap-6">

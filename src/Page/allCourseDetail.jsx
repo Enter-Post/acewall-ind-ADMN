@@ -25,6 +25,7 @@ import {
 } from "@radix-ui/react-collapsible";
 import PurchaseConfirmationModal from "@/CustomComponent/Student/ConfirmationModal";
 import { toast } from "sonner";
+import BackButton from "@/CustomComponent/BackButton";
 
 // AllCoursesDetail Component
 const AllCoursesDetail = () => {
@@ -79,6 +80,8 @@ const AllCoursesDetail = () => {
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen">
+      <BackButton label="Go Back" className="mb-4" />
+
       <div className="grid lg:grid-cols-3 w-full  gap-2 ">
         <div className="lg:col-span-2 w-full ">
           <div className="  px-2  overflow-hidden mb-6">

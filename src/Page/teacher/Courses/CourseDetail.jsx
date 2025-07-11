@@ -23,10 +23,11 @@ import ChapterDetail from "@/CustomComponent/CreateCourse/ChapterDetail";
 import { FinalCourseAssessmentCard } from "@/CustomComponent/CreateCourse/FinalCourseAssessmentCard";
 import { toast } from "sonner";
 import RatingSection from "@/CustomComponent/Rating-section";
+import BackButton from "@/CustomComponent/BackButton";
 
 export default function TeacherCourseDetails() {
   const { id } = useParams() || { id: "68115952b4991f70a28c486f" }; // Default ID or from URL
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [course, setCourse] = useState(null);
   const [open, setOpen] = useState(false);
@@ -85,6 +86,8 @@ export default function TeacherCourseDetails() {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
+      <BackButton label="Go Back" className="mb-4" />
+
       <h1 className="text-3xl font-semibold mb-8">All Courses</h1>
 
       <div className="space-y-8">

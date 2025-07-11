@@ -27,10 +27,14 @@ const Subcategory = () => {
   const [subcategories, setSubcategories] = useState([]);
   const [newSub, setNewSub] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editData, setEditData] = useState({ id: "", title: "" });
+  const [editError, setEditError] = useState("");
   const [categoryId, setCategoryId] = useState(null);
-  const navigate = useNavigate();
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
+  // Fetch category ID from title
   const fetchCategoryId = async () => {
     try {
       const { data } = await axiosInstance.get("/category/get");
@@ -50,15 +54,11 @@ const Subcategory = () => {
   const fetchSubcategories = async (id) => {
     try {
       const { data } = await axiosInstance.get(`/category/subcategories/${id}`);
-      // Store full subcategory objects for id & title
       setSubcategories(data.subcategories);
-      console.log(data);
-
     } catch (err) {
       console.error("Error fetching subcategories:", err);
     }
   };
-
 
   const handleAddSubcategory = async () => {
     if (!newSub.trim()) return;
@@ -77,7 +77,7 @@ const Subcategory = () => {
 
       setNewSub("");
       setDialogOpen(false);
-      setError(""); // clear any previous error
+      setError("");
     } catch (err) {
       if (err.response?.status === 400) {
         setError(err.response.data.message);
@@ -88,8 +88,36 @@ const Subcategory = () => {
     }
   };
 
+  const handleEditSubcategory = async () => {
+    if (!editData.title.trim()) return;
 
-  // DELETE handler
+    try {
+      const { data } = await axiosInstance.put(`/subcategory/subcategory/${editData.id}`, {
+        title: editData.title,
+        category: categoryId,
+      });
+
+      setSubcategories((prev) =>
+        prev
+          .map((sub) =>
+            sub._id === data.subcategory._id ? data.subcategory : sub
+          )
+          .sort((a, b) => a.title.localeCompare(b.title))
+      );
+
+      setEditDialogOpen(false);
+      setEditData({ id: "", title: "" });
+      setEditError("");
+    } catch (err) {
+      if (err.response?.status === 400) {
+        setEditError(err.response.data.message);
+      } else {
+        console.error("Error updating subcategory:", err);
+        setEditError("An unexpected error occurred.");
+      }
+    }
+  };
+
   const handleDeleteSubcategory = async (id) => {
     try {
       await axiosInstance.delete(`/subcategory/delete/${id}`);
@@ -114,13 +142,13 @@ const Subcategory = () => {
       <Button variant="outline" onClick={() => navigate(-1)}>
         ← Back
       </Button>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <h1 className="text-2xl font-semibold">
-            Subcategories for: {decodeURIComponent(categoryName)}
-          </h1>
-        </div>
 
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-semibold">
+          Subcategories for: {decodeURIComponent(categoryName)}
+        </h1>
+
+        {/* Add Subcategory Dialog */}
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <Button className="flex items-center gap-2">
@@ -128,12 +156,10 @@ const Subcategory = () => {
               Add Sub Category
             </Button>
           </DialogTrigger>
-
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Add Sub Category</DialogTitle>
             </DialogHeader>
-
             <div className="space-y-4">
               <Label htmlFor="subcategory">Sub Category Name</Label>
               <Input
@@ -147,7 +173,30 @@ const Subcategory = () => {
                 Add
               </Button>
             </div>
+          </DialogContent>
+        </Dialog>
 
+        {/* Edit Subcategory Dialog */}
+        <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Edit Sub Category</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <Label htmlFor="edit-subcategory">Sub Category Name</Label>
+              <Input
+                id="edit-subcategory"
+                value={editData.title}
+                onChange={(e) =>
+                  setEditData((prev) => ({ ...prev, title: e.target.value }))
+                }
+                placeholder="e.g. Updated Subcategory"
+              />
+              {editError && <p className="text-red-500 text-sm">{editError}</p>}
+              <Button onClick={handleEditSubcategory} className="w-full">
+                Save Changes
+              </Button>
+            </div>
           </DialogContent>
         </Dialog>
       </div>
@@ -167,7 +216,17 @@ const Subcategory = () => {
                 <TableRow key={sub._id}>
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>{sub.title}</TableCell>
-                  <TableCell>
+                  <TableCell className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setEditData({ id: sub._id, title: sub.title });
+                        setEditDialogOpen(true);
+                      }}
+                    >
+                      Edit
+                    </Button>
                     <Button
                       variant="ghost"
                       size="icon"
@@ -194,3 +253,8 @@ const Subcategory = () => {
 };
 
 export default Subcategory;
+
+
+
+
+

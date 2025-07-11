@@ -29,6 +29,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { axiosInstance } from "@/lib/AxiosInstance";
+import { Avatar } from "@radix-ui/react-avatar";
 const sideBarTabs = [
   {
     id: 1,
@@ -62,14 +63,14 @@ const sideBarTabs = [
     icon: <Headset />,
     path: "/admin/support",
   },
- 
+
   {
     id: 7,
     name: "Newsletter",
     icon: <Mails />,
     path: "/admin/Newsletter",
   },
-  
+
 ];
 
 export default function TeacherLayout() {
@@ -140,85 +141,25 @@ export default function TeacherLayout() {
             <div className="flex gap-6"></div>
           </div>
 
-          {/* Search Dropdown */}
-          {/* <div className="relative w-64 hidden md:flex flex-col">
-            <DropdownMenu
-              open={openDropdown}
-              onOpenChange={setOpenDropdown}
-              modal={false}
-            >
-              <DropdownMenuTrigger asChild>
-                <div className="relative flex gap-2 w-full">
-                  <Input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => {
-                      setSearchQuery(e.target.value);
-                      if (!e.target.value.trim()) {
-                        setDropdownCourses([]);
-                        setOpenDropdown(false);
-                      }
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        handleSearch();
-                      }
-                    }}
-                    placeholder="Search courses and lessons"
-                    className="w-full pr-10 border border-gray-300 focus:ring-2 focus:ring-green-400 focus:border-transparent rounded-md transition-all"
-                  />
-                  <button
-                    onClick={handleSearch}
-                    className="bg-green-500 hover:bg-green-600 text-white rounded-full p-2 transition-colors"
-                    aria-label="Search"
-                  >
-                    <Search className="w-5 h-5" />
-                  </button>
-                </div>
-              </DropdownMenuTrigger>
 
-              <DropdownMenuContent className=" bg-white border  border-gray-200 shadow-md rounded-md mt-2 max-h-60 overflow-y-auto z-50 w-64">
-                {loading ? (
-                  <DropdownMenuItem disabled>
-                    <span className="text-sm text-gray-700">Searching...</span>
-                  </DropdownMenuItem>
-                ) : dropdownCourses.length > 0 ? (
-                  dropdownCourses.map((course) => (
-                    <DropdownMenuItem asChild key={course._id}>
-                      <Link
-                        to={`/admin/courses/courseDetail/${course._id}`}
-                        onClick={() => setOpenDropdown(false)}
-                        className="w-full block text-sm text-gray-800 hover:bg-gray-100 px-2 py-1 rounded"
-                      >
-                        {course.basics?.courseTitle || "Untitled Course"}
-                      </Link>
-                    </DropdownMenuItem>
-                  ))
-                ) : (
-                  <DropdownMenuItem disabled>
-                    <span className="text-sm text-gray-500">
-                      No results found
-                    </span>
-                  </DropdownMenuItem>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div> */}
         </div>
       </header>
 
       <div className="flex flex-1 overflow-hidden">
         <aside
-          className={`bg-white ${
-            isSidebarOpen ? "block" : "hidden"
-          } w-screen md:w-64 flex-shrink-0 overflow-y-auto md:block`}
+          className={`bg-white ${isSidebarOpen ? "block" : "hidden"
+            } w-screen md:w-64 flex-shrink-0 overflow-y-auto md:block`}
         >
           <div className="p-4">
             <div className="flex items-center space-x-3 pb-4">
-             
               <div>
-                <p className="font-medium">{user.firstName}</p>
-                <p className="text-md text-gray-600 ml-5">{user.email}</p>
+                <p
+                  className="text-sm text-gray-600 w-full  break-words"
+                  title={user.email}
+
+                >
+                  {user.email}
+                </p>
               </div>
             </div>
             <nav className="space-y-2">
@@ -229,15 +170,13 @@ export default function TeacherLayout() {
                   onClick={() => {
                     setIsSidebarOpen(false);
                   }}
-                  className={`flex items-center space-x-3 rounded-lg px-3 py-2 ${
-                    location == tab.path ? "bg-green-500" : "text-black"
-                  } `}
+                  className={`flex items-center space-x-3 rounded-lg px-3 py-2 ${location == tab.path ? "bg-green-500" : "text-black"
+                    } `}
                 >
                   <p>{tab.icon}</p>
                   <span
-                    className={`${
-                      location == tab.path ? "text-white" : "text-green-600"
-                    }`}
+                    className={`${location == tab.path ? "text-white" : "text-green-600"
+                      }`}
                   >
                     {tab.name}
                   </span>

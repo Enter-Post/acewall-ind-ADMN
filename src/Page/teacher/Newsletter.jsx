@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { axiosInstance } from '@/lib/AxiosInstance';
+import BackButton from '@/CustomComponent/BackButton';
 
 const Newsletter = () => {
   const [subscribers, setSubscribers] = useState([]);
@@ -40,6 +41,8 @@ const Newsletter = () => {
 
   return (
     <div className="container mx-auto p-6">
+      <BackButton label="Go Back" className="mb-4" />
+
       <h1 className="text-2xl font-semibold mb-4">Newsletter Subscribers</h1>
       
       <button 
