@@ -15,14 +15,15 @@ export const CourseProvider = ({ children }) => {
     chapters: [],
     createdby: user?._id,
   });
+  const [quarters, setQuarters] = useState([])
 
-// <<<<<<< Messages
-//   // console.log(course, "course");
-// =======
-//   // const uploadCourse = async () => {
-// >>>>>>> keshaUpdates-23/4
+  // <<<<<<< Messages
+  //   // console.log(course, "course");
+  // =======
+  //   // const uploadCourse = async () => {
+  // >>>>>>> keshaUpdates-23/4
 
-//   // };
+  //   // };
 
   return (
     <CourseContext.Provider
@@ -31,6 +32,9 @@ export const CourseProvider = ({ children }) => {
         setCourse,
         courseLoading,
         setCourseLoading,
+        quarters,
+        setQuarters,
+
       }}
     >
       {children}

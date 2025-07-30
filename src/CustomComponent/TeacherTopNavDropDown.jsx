@@ -28,8 +28,8 @@ export function TeacherTopNavbarDropDown({ selected, setselected }) {
   // console.log(user);
 
   const handleLogout = async () => {
-    logout();
-    checkAuth();
+   await logout();
+   await checkAuth();
     location.reload();
   };
 

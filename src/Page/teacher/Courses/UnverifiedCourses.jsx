@@ -7,14 +7,17 @@ import { axiosInstance } from "@/lib/AxiosInstance";
 import { Button } from "@/components/ui/button";
 import { Loader } from "lucide-react";
 import { GlobalContext } from "@/Context/GlobalProvider";
+import BackButton from "@/CustomComponent/BackButton";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-const TeacherCourses = () => {
+const UnverifiedCourses = () => {
   const [allCourses, setAllCourses] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isVerified, setIsVerified] = useState("pending");
   const { user } = useContext(GlobalContext);
 
-  console.log(allCourses, "allCourses");
+  console.log(isVerified, "isVerified");
 
   const searching = searchQuery.trim() !== "";
 
@@ -24,7 +27,7 @@ const TeacherCourses = () => {
       const getCourses = async () => {
         try {
           const response = await axiosInstance.get(
-            "/course/all",
+            `/course/all?isVerified=${isVerified}`,
             {
               params: { search: searchQuery },
             }
@@ -41,19 +44,40 @@ const TeacherCourses = () => {
     }, 2000); // 500ms delay
 
     return () => clearTimeout(delayDebounce); // cleanup
-  }, [searchQuery]);
+  }, [searchQuery, isVerified]);
 
   return (
     <section className="p-3 md:p-0">
+      <div className="mb-2">
+        <BackButton />
+      </div>
       <div className="flex flex-col pb-5 gap-5">
         <div>
-          <p className="text-xl py-4 mb-8 pl-6 font-semibold bg-acewall-main text-white rounded-lg">
-            All Courses
+          <p className="text-xl py-4 pl-6 font-semibold bg-acewall-main text-white rounded-lg">
+            Unverified Courses
           </p>
         </div>
-        <SearchBox query={searchQuery} setQuery={setSearchQuery} />
+        <section className="flex flex-col gap-4 mb-4">
+          <SearchBox query={searchQuery} setQuery={setSearchQuery} />
+
+          <Tabs defaultValue="pending" className="w-full">
+            <TabsList>
+              <TabsTrigger
+                value="pending"
+                onClick={() => setIsVerified("pending")}
+              >
+                Pending courses
+              </TabsTrigger>
+              <TabsTrigger
+                value="rejected"
+                onClick={() => setIsVerified("rejected")}
+              >
+                Rejected courses
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </section>
       </div>
-      <Link to={"/admin/courses/gradescale"}></Link>
 
       {loading ? (
         <div className="flex justify-center items-center py-10">
@@ -63,59 +87,9 @@ const TeacherCourses = () => {
         </div>
       ) : allCourses?.length === 0 ? (
         <div className="flex flex-col items-center justify-center text-center px-4">
-          {searching ? (
-            <>
-              <h1 className="text-2xl font-semibold text-muted-foreground">
-                No course found for "{searchQuery}"
-              </h1>
-              <p className="text-md mt-4 text-muted-foreground">
-                Try a different keyword or explore all your courses.
-              </p>
-              <ul className="list-disc pl-6 leading-relaxed mt-4 text-left text-muted-foreground">
-                <li>Check spelling</li>
-                <li>Try different or more general terms</li>
-              </ul>
-              <Button
-                className="mt-6 bg-green-500 text-white hover:bg-acewall-main"
-                onClick={() => setSearchQuery("")}
-              >
-                Reset Search
-              </Button>
-            </>
-          ) : (
-            <>
-              <h1 className="text-xl md:text-2xl lg:text-4xl font-semibold text-center text-muted-foreground">
-                LET'S EDUCATE THE FUTURE
-              </h1>
-              <Link to="/admin/courses/createCourses">
-                <Button className="mt-8 py-2 px-4 rounded-md text-lg bg-green-500 text-white hover:bg-acewall-main/90 flex items-center gap-2">
-                  Create Courses
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-6 h-6 font-bold"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </Button>
-              </Link>
-              <img
-                src="https://img.freepik.com/free-vector/college-campus-concept-illustration_114360-10535.jpg"
-                alt="No courses"
-                className="w-full h-80 object-contain mt-6"
-              />
-              <p className="text-lg mt-4 text-muted-foreground">
-                When you create a course, it will appear here.
-              </p>
-            </>
-          )}
+          <p className="text-lg font-medium text-gray-700">
+            No courses are currently available.
+          </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -157,4 +131,4 @@ const TeacherCourses = () => {
   );
 };
 
-export default TeacherCourses;
+export default UnverifiedCourses;
