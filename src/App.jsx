@@ -84,7 +84,10 @@ function App() {
           <Route path="/admin" element={<TeacherLayout />}>
             <Route index element={<TeacherDashboard />} />
             <Route path="category" element={<Category />} />
-            <Route path="subcategory/:categor yName" element={<Subcategory />} />
+            <Route
+              path="subcategory/:categor yName"
+              element={<Subcategory />}
+            />
             <Route path="allStudent" element={<AllStudent />} />
             <Route path="newsletter" element={<Newsletter />} />
             <Route path="allTeacher" element={<AllTeacher />} />
@@ -120,16 +123,16 @@ function App() {
 
               <Route path="stdPreview/:id" element={<StdPreview />} />
 
-              <Route path="courseDetail/:id" element={<TeacherCourseDetails />} />
-              <Route path="generalcoursesdetailpage/:id" element={<GeneralCoursesDetail />} />
+              <Route
+                path="courseDetail/:id"
+                element={<TeacherCourseDetails />}
+              />
+              <Route
+                path="generalcoursesdetailpage/:id"
+                element={<GeneralCoursesDetail />}
+              />
               <Route path="edit/:courseId" element={<EditCourse />} />
             </Route>
-
-
-
-
-
-
           </Route>
         </Route>
       </Routes>

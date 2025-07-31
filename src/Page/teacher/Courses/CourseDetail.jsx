@@ -52,8 +52,8 @@ export default function TeacherCourseDetails() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
 
-  console.log(course?.quarter, "course")
-  console.log(quarters, "quarters")
+  console.log(course?.quarter, "course");
+  console.log(quarters, "quarters");
 
   const handleDeleteAssessment = (assessmentID) => {
     setLoading(true);
@@ -166,7 +166,6 @@ export default function TeacherCourseDetails() {
 
   return (
     <div className="container mx-auto px-4 py-2 max-w-6xl">
-
       <section className="flex justify-between items-center">
         <BackButton label="Back" className="" />
         <div className="flex justify-between items-center">
@@ -201,12 +200,8 @@ export default function TeacherCourseDetails() {
           </p>
         </div>
       ) : null}
-      <BackButton className="mb-10" />
-      <div className="flex item-center justify-between">
-        <h1 className="text-3xl font-semibold mb-8">My Courses</h1>
-      </div>
 
-      <div className="space-y-8">
+      <div className="space-y-8 mt-7">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-1 flex flex-col gap-4">
             <img
@@ -214,7 +209,7 @@ export default function TeacherCourseDetails() {
                 Prevthumbnail
                   ? Prevthumbnail
                   : course.thumbnail.url ||
-                  "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80"
+                    "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80"
               }
               alt="Course thumbnail"
               className="w-full rounded-md object-cover aspect-video"
@@ -267,20 +262,20 @@ export default function TeacherCourseDetails() {
                   Uploaded:{" "}
                   {course.createdAt
                     ? new Date(course.createdAt).toLocaleDateString("en-US", {
-                      year: "2-digit",
-                      month: "2-digit",
-                      day: "2-digit",
-                    })
+                        year: "2-digit",
+                        month: "2-digit",
+                        day: "2-digit",
+                      })
                     : "N/A"}
                 </span>
                 <span>
                   Last Updated:{" "}
                   {course.updatedAt
                     ? new Date(course.updatedAt).toLocaleDateString("en-US", {
-                      year: "2-digit",
-                      month: "2-digit",
-                      day: "2-digit",
-                    })
+                        year: "2-digit",
+                        month: "2-digit",
+                        day: "2-digit",
+                      })
                     : "N/A"}
                 </span>
               </div>
@@ -419,31 +414,37 @@ export default function TeacherCourseDetails() {
             bgColor="bg-slate-100 hover:bg-slate-200"
           />
         </div>
-        <SelectSemAndQuarDialog
+        {/* <SelectSemAndQuarDialog
           prevSelectedSemesters={prevSemesterIds}
           prevSelectedQuarters={prevQuarterIds}
           courseId={id}
           fetchCourseDetail={fetchCourseDetail}
-        />
-        {course?.semester?.map((semester, index) => (
-          <Link
-            key={semester._id}
-            to={`/admin/courses/${id}/semester/${semester._id}`}
-          >
-            <div
+        /> */}
+        {course?.semester?.length === 0 ? (
+          <p className="text-lg font-semibold text-center mt-6">
+            No Semester added by teacher
+          </p>
+        ) : (
+          course?.semester?.map((semester, index) => (
+            <Link
               key={semester._id}
-              className="mb-4 border border-gray-200 p-5 rounded-lg bg-gray-50 hover:bg-gray-100 cursor-pointer"
+              to={`/admin/courses/${id}/semester/${semester._id}`}
             >
-              <h3 className="font-semibold text-md">
-                Semester {index + 1}: {semester.title}
-              </h3>
-              <p className="text-xs text-muted-foreground">
-                {format(new Date(semester.startDate), "MMMM do, yyyy")} -{" "}
-                {format(new Date(semester.endDate), "MMMM do, yyyy")}
-              </p>
-            </div>
-          </Link>
-        ))}
+              <div
+                key={semester._id}
+                className="mb-4 border border-gray-200 p-5 rounded-lg bg-gray-50 hover:bg-gray-100 cursor-pointer"
+              >
+                <h3 className="font-semibold text-md">
+                  Semester {index + 1}: {semester.title}
+                </h3>
+                <p className="text-xs text-muted-foreground">
+                  {format(new Date(semester.startDate), "MMMM do, yyyy")} -{" "}
+                  {format(new Date(semester.endDate), "MMMM do, yyyy")}
+                </p>
+              </div>
+            </Link>
+          ))
+        )}
         {/* <div className="flex gap-4">
           <Pages />
           <button
@@ -468,31 +469,29 @@ export default function TeacherCourseDetails() {
 
       <CommentSection id={id} />
 
-     <div className="flex justify-end space-x-4 mt-10">
-  {/* Archive Dialog */}
-  <ArchiveDialog course={course} fetchCourseDetail={fetchCourseDetail} />
+      <div className="flex justify-end space-x-4 mt-10">
+        {/* Archive Dialog */}
+        <ArchiveDialog course={course} fetchCourseDetail={fetchCourseDetail} />
 
-  {/* Delete Confirmation Modal */}
-  <DeleteCourseModal
-    confirmOpen={confirmOpen}
-    setConfirmOpen={setConfirmOpen}
-    fetchCourseDetail={fetchCourseDetail}
-    id={id}
-    setSuccessOpen={setSuccessOpen}
-  />
+        {/* Delete Confirmation Modal */}
+        <DeleteCourseModal
+          confirmOpen={confirmOpen}
+          setConfirmOpen={setConfirmOpen}
+          fetchCourseDetail={fetchCourseDetail}
+          id={id}
+          setSuccessOpen={setSuccessOpen}
+        />
 
-  {/* ✅ Success Confirmation Modal */}
-  <Dialog open={successOpen} onOpenChange={setSuccessOpen}>
-    <DialogContent className="flex flex-col items-center justify-center text-center">
-      <CheckCircle className="w-12 h-12 text-green-500" />
-      <h3 className="text-lg font-semibold mt-2">
-        Course deleted successfully!
-      </h3>
-    </DialogContent>
-  </Dialog>
-</div>
-
-
+        {/* ✅ Success Confirmation Modal */}
+        <Dialog open={successOpen} onOpenChange={setSuccessOpen}>
+          <DialogContent className="flex flex-col items-center justify-center text-center">
+            <CheckCircle className="w-12 h-12 text-green-500" />
+            <h3 className="text-lg font-semibold mt-2">
+              Course deleted successfully!
+            </h3>
+          </DialogContent>
+        </Dialog>
+      </div>
     </div>
   );
 }

@@ -92,9 +92,6 @@ export default function CategoryDropdown({
   };
 
   const onSubmit = async (data) => {
-    console.log(data);
-
-    return
     const errors = validateForm(data);
 
     if (Object.keys(errors).length > 0) {
