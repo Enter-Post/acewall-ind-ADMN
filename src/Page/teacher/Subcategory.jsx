@@ -92,7 +92,7 @@ const Subcategory = () => {
     if (!editData.title.trim()) return;
 
     try {
-      const { data } = await axiosInstance.put(`/subcategory/subcategory/${editData.id}`, {
+      const { data } = await axiosInstance.put(`/subcategory/${editData.id}`, {
         title: editData.title,
         category: categoryId,
       });

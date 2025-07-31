@@ -32,6 +32,8 @@ const Category = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  console.log(subCountMap, "subCountMap");
+
   useEffect(() => {
     fetchCategories();
   }, []);
@@ -54,7 +56,9 @@ const Category = () => {
     try {
       const counts = {};
       for (const cat of categories) {
-        const res = await axiosInstance.get(`/category/subcategories/${cat._id}`);
+        const res = await axiosInstance.get(
+          `/category/subcategories/${cat._id}`
+        );
         counts[cat._id] = res.data.subcategories?.length || 0;
       }
       setSubCountMap(counts);
@@ -85,9 +89,7 @@ const Category = () => {
         title: editData.title,
       });
       setCategories((prev) =>
-        prev.map((cat) =>
-          cat._id === editData.id ? res.data.category : cat
-        )
+        prev.map((cat) => (cat._id === editData.id ? res.data.category : cat))
       );
       setEditDialogOpen(false);
     } catch (error) {
@@ -184,7 +186,9 @@ const Category = () => {
                       <span
                         onClick={() =>
                           navigate(
-                            `/admin/subcategory/${encodeURIComponent(cat.title)}`
+                            `/admin/subcategory/${encodeURIComponent(
+                              cat.title
+                            )}`
                           )
                         }
                         className="text-blue-600 hover:underline cursor-pointer"
@@ -212,7 +216,9 @@ const Category = () => {
                         className="text-sm text-blue-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-400"
                         onClick={() =>
                           navigate(
-                            `/admin/subcategory/${encodeURIComponent(cat.title)}`
+                            `/admin/subcategory/${encodeURIComponent(
+                              cat._id
+                            )}`
                           )
                         }
                         role="link"

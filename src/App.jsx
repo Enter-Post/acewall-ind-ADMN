@@ -85,7 +85,7 @@ function App() {
             <Route index element={<TeacherDashboard />} />
             <Route path="category" element={<Category />} />
             <Route
-              path="subcategory/:categor yName"
+              path="subcategory/:categoryName"
               element={<Subcategory />}
             />
             <Route path="allStudent" element={<AllStudent />} />
