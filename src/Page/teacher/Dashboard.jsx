@@ -1,13 +1,7 @@
 "use client";
 
 import { useContext, useEffect, useState } from "react";
-import {
-  BookOpen,
-  GraduationCap,
-  Users,
-  Grid2x2,
-  Mail,
-} from "lucide-react";
+import { BookOpen, GraduationCap, Users, Grid2x2, Mail } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { axiosInstance } from "@/lib/AxiosInstance";
 import { GlobalContext } from "@/Context/GlobalProvider";
@@ -20,15 +14,17 @@ export default function TeacherDashboard() {
   const [totalCategories, setTotalCategories] = useState(0);
   const [totalSubscribers, setTotalSubscribers] = useState(0);
 
-
   const [recentActivity, setRecentActivity] = useState([]);
   const { user } = useContext(GlobalContext);
   const teacherId = user?._id;
 
   // Fetch teacher courses
   useEffect(() => {
-    axiosInstance("/course/all")
-      .then((res) => setCourses(res.data.courses || []))
+    axiosInstance("/admin/adminDeshboard")
+      .then((res) => {
+        console.log("Teacher Dashboard courses:", res.data);
+        setCourses(res.data);
+      })
       .catch(console.error);
   }, []);
 
@@ -40,7 +36,6 @@ export default function TeacherDashboard() {
         setStudents(res.data || []);
       })
       .catch(console.error);
-
   }, []);
 
   useEffect(() => {
@@ -50,7 +45,6 @@ export default function TeacherDashboard() {
         setTeachers(res.data || []);
       })
       .catch(console.error);
-
   }, []);
 
   useEffect(() => {
@@ -72,8 +66,13 @@ export default function TeacherDashboard() {
 
   const metrics = [
     {
-      title: "Courses",
-      value: courses.length,
+      title: "Approved Courses",
+      value: courses.approved,
+      icon: <BookOpen size={16} className="text-green-600" />,
+      link: "/admin/courses", // Route for courses
+    }, {
+      title: "Pending Courses",
+      value: courses.pending,
       icon: <BookOpen size={16} className="text-green-600" />,
       link: "/admin/courses", // Route for courses
     },
@@ -103,7 +102,6 @@ export default function TeacherDashboard() {
     },
   ];
 
-
   return (
     <div className="min-h-screen px-4 sm:px-6 lg:px-8">
       <h1 className="text-2xl font-semibold text-white bg-acewall-main p-4 rounded-md mb-6">
@@ -116,7 +114,9 @@ export default function TeacherDashboard() {
           <Link to={metric.link} key={idx}>
             <Card className="cursor-pointer hover:shadow-lg transition">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm text-gray-500">{metric.title}</CardTitle>
+                <CardTitle className="text-sm text-gray-500">
+                  {metric.title}
+                </CardTitle>
                 <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
                   {metric.icon}
                 </div>
@@ -129,15 +129,13 @@ export default function TeacherDashboard() {
         ))}
       </div>
 
-
       {/* Activity and Recent Courses */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-
-        {/* Recent Courses */}
+      {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg font-semibold">Recent Courses</CardTitle>
+            <CardTitle className="text-lg font-semibold">
+              Recent Courses
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {courses.slice(0, 3).map((course, i) => (
@@ -149,15 +147,19 @@ export default function TeacherDashboard() {
                     className="w-10 h-10 object-cover rounded"
                   />
                   <div>
-                    <h3 className="text-sm font-medium">{course.courseTitle}</h3>
-                    <p className="text-xs text-gray-500">{course.category?.title}</p>
+                    <h3 className="text-sm font-medium">
+                      {course.courseTitle}
+                    </h3>
+                    <p className="text-xs text-gray-500">
+                      {course.category?.title}
+                    </p>
                   </div>
                 </div>
               </Link>
             ))}
           </CardContent>
         </Card>
-      </div>
+      </div> */}
     </div>
   );
 }
