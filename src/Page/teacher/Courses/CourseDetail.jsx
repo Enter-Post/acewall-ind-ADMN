@@ -68,7 +68,8 @@ export default function TeacherCourseDetails() {
         setLoading(false);
         toast.error(err.response?.data?.message || "Error deleting assessment");
       });
-  }; // Delete Assessment
+  };
+
   const fetchCourseDetail = async () => {
     await axiosInstance
       .get(`course/details/${id}`)
@@ -79,7 +80,6 @@ export default function TeacherCourseDetails() {
       .catch((err) => {
         console.log(err);
       });
-    // Set the course data in state
   };
 
   const handleVerifyCourse = async (status) => {
@@ -96,9 +96,7 @@ export default function TeacherCourseDetails() {
 
   useEffect(() => {
     fetchCourseDetail();
-  }, [id]); // Added id as a dependency to refetch when the id changes
-
-  // console.log(course?.semester, "course?.semester");
+  }, [id]);
 
   const handleThumbnailChange = (e) => {
     const file = e.target.files[0];
@@ -157,323 +155,314 @@ export default function TeacherCourseDetails() {
 
   if (!course)
     return (
-      <div>
-        <section className="flex justify-center items-center h-screen w-full">
-          <Loader className={"animate-spin"} />
-        </section>
+      <div className="flex justify-center items-center h-screen w-full">
+        <Loader className="animate-spin w-8 h-8" />
       </div>
     );
 
   return (
-    <div className="container mx-auto px-4 py-2 max-w-6xl">
-      <section className="flex justify-between items-center">
-        <BackButton label="Back" className="" />
-        <div className="flex justify-between items-center">
-          {course && course.isVerified === "pending" && (
-            <div className="flex gap-4 mb-6">
-              <Button
-                variant="success"
-                className="bg-green-500 hover:bg-green-600 text-white"
-                onClick={() => {
-                  handleVerifyCourse("approved");
-                }}
-              >
-                Verify
-              </Button>
-              <Button
-                variant="destructive"
-                onClick={() => {
-                  handleVerifyCourse("rejected");
-                }}
-              >
-                Reject
-              </Button>
-            </div>
-          )}
-        </div>
-      </section>
-      {course.published === false ? (
-        <div className="flex items-center justify-center rounded-md bg-red-200 p-4 mb-4">
-          <p className="text-sm ">
-            This course is Archived. It will not be visible to students which
-            are not enrolled in the course.
+    <div className="container mx-auto px-4 py-6 max-w-7xl">
+      {/* Header Section */}
+      <div className="flex justify-between items-center mb-6">
+        <BackButton label="Back" />
+        {course && course.isVerified === "pending" && (
+          <div className="flex gap-3">
+            <Button
+              className="bg-green-500 hover:bg-green-600 text-white"
+              onClick={() => handleVerifyCourse("approved")}
+            >
+              Verify Course
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => handleVerifyCourse("rejected")}
+            >
+              Reject Course
+            </Button>
+          </div>
+        )}
+      </div>
+
+      {/* Archive Warning */}
+      {!course.published && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+          <p className="text-red-800 text-sm font-medium">
+            ⚠️ This course is archived and not visible to new students.
           </p>
         </div>
-      ) : null}
+      )}
 
-      <div className="space-y-8 mt-7">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="md:col-span-1 flex flex-col gap-4">
-            <img
-              src={
-                Prevthumbnail
-                  ? Prevthumbnail
-                  : course.thumbnail.url ||
-                    "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80"
-              }
-              alt="Course thumbnail"
-              className="w-full rounded-md object-cover aspect-video"
-            />
-            {Prevthumbnail ? (
-              <div className="flex items-center space-x-2">
-                <Button
-                  className={"bg-green-600 hover:bg-green-700"}
-                  onClick={confirmChange}
-                >
-                  {loadingThumbnail ? (
-                    <Loader className={"animate-spin"} />
-                  ) : (
-                    "Confirm"
-                  )}
-                </Button>
-                <Button
-                  className={"bg-red-600 hover:bg-red-700"}
-                  onClick={() => {
-                    setPrevThumbnail(null);
-                    setNewThumbnail(null);
-                  }}
-                >
-                  Cancel
-                </Button>
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-8">
+        {/* Left Column - Thumbnail & Documents */}
+        <div className="lg:col-span-4 space-y-6">
+          {/* Thumbnail Section */}
+          <Card className="overflow-hidden shadow-sm">
+            <CardContent className="p-0">
+              <img
+                src={
+                  Prevthumbnail ||
+                  course.thumbnail?.url ||
+                  "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80"
+                }
+                alt="Course thumbnail"
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-4">
+                {Prevthumbnail ? (
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      className="bg-green-600 hover:bg-green-700 flex-1"
+                      onClick={confirmChange}
+                      disabled={loadingThumbnail}
+                    >
+                      {loadingThumbnail ? (
+                        <Loader className="animate-spin w-4 h-4" />
+                      ) : (
+                        "Confirm"
+                      )}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex-1"
+                      onClick={() => {
+                        setPrevThumbnail(null);
+                        setNewThumbnail(null);
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                ) : (
+                  <div>
+                    <input
+                      type="file"
+                      className="hidden"
+                      id="thumbnail"
+                      onChange={handleThumbnailChange}
+                    />
+                    <label
+                      htmlFor="thumbnail"
+                      className="flex items-center justify-center gap-2 w-full px-4 py-2 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition-colors"
+                    >
+                      <Pen className="h-4 w-4" />
+                      <span className="text-sm font-medium">
+                        Edit Thumbnail
+                      </span>
+                    </label>
+                  </div>
+                )}
               </div>
-            ) : (
-              <div className="flex items-center space-x-2">
-                <input
-                  type="file"
-                  className="hidden"
-                  id="thumbnail"
-                  onChange={handleThumbnailChange}
-                />
-                <label
-                  htmlFor="thumbnail"
-                  className="flex items-center space-x-2 px-4 py-2 border rounded-md cursor-pointer hover:bg-gray-100"
-                >
-                  <Pen className="h-4 w-4" />
-                  <span className="text-sm font-medium">Edit thumbnail</span>
-                </label>
-              </div>
-            )}
-          </div>
+            </CardContent>
+          </Card>
 
-          <div className="md:col-span-2 space-y-6">
-            <div className="space-y-1">
-              <div className="flex justify-between text-sm mb-2 text-muted-foreground">
-                <span>
-                  Uploaded:{" "}
-                  {course.createdAt
-                    ? new Date(course.createdAt).toLocaleDateString("en-US", {
-                        year: "2-digit",
-                        month: "2-digit",
-                        day: "2-digit",
-                      })
-                    : "N/A"}
-                </span>
-                <span>
-                  Last Updated:{" "}
-                  {course.updatedAt
-                    ? new Date(course.updatedAt).toLocaleDateString("en-US", {
-                        year: "2-digit",
-                        month: "2-digit",
-                        day: "2-digit",
-                      })
-                    : "N/A"}
-                </span>
+          {/* Documents Section */}
+        </div>
+
+        {/* Right Column - Course Details */}
+        <div className="lg:col-span-8 space-y-6">
+          {/* Course Info Card */}
+          <Card className="shadow-sm">
+            <CardContent className="p-6">
+              {/* Course Metadata */}
+              <div className="flex justify-between text-xs text-muted-foreground mb-4">
+                <span>Created: {formatDate(course.createdAt)}</span>
+                <span>Updated: {formatDate(course.updatedAt)}</span>
               </div>
 
-              <h2 className="text-2xl uppercase font-semibold">
-                {course.courseTitle || "Course Title"}
-              </h2>
-              <p className="text-muted-foreground">
-                {course.courseDescription || "Course description goes here..."}
-              </p>
+              {/* Course Title & Description */}
+              <div className="space-y-3">
+                <h1 className="text-3xl font-bold text-gray-900">
+                  {course.courseTitle || "Untitled Course"}
+                </h1>
+                <p className="text-gray-600 leading-relaxed">
+                  {course.courseDescription || "No description available."}
+                </p>
 
-              <div>
-                {course.isVerified && (
+                {/* Verification Status */}
+                <div className="flex items-center gap-2">
                   <span
                     className={cn(
-                      "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ml-2",
+                      "inline-flex items-center px-3 py-1 rounded-full text-xs font-medium",
                       {
-                        "bg-yellow-100 text-yellow-800":
+                        "bg-yellow-100 text-yellow-800 border border-yellow-200":
                           course.isVerified === "pending",
-                        "bg-green-100 text-green-800":
+                        "bg-green-100 text-green-800 border border-green-200":
                           course.isVerified === "approved",
-                        "bg-red-100 text-red-800":
+                        "bg-red-100 text-red-800 border border-red-200":
                           course.isVerified === "rejected",
                       }
                     )}
                   >
-                    {course.isVerified}
+                    {course.isVerified?.charAt(0).toUpperCase() +
+                      course.isVerified?.slice(1)}
                   </span>
-                )}
+                </div>
+
+                {/* Status Messages */}
                 {course.isVerified === "pending" && (
-                  <div className="text-yellow-700 text-xs mt-1">
-                    Course verification is pending. You have to verify it
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3">
+                    <p className="text-yellow-800 text-sm">
+                      Course verification is pending review.
+                    </p>
                   </div>
                 )}
                 {course.isVerified === "rejected" && (
-                  <div className="text-red-700 text-xs mt-1">
-                    Course verification was rejected. Please review and update
-                    your course.
+                  <div className="bg-red-50 border border-red-200 rounded-md p-3">
+                    <p className="text-red-800 text-sm">
+                      Course verification was rejected. Please review and update
+                      your course.
+                    </p>
                   </div>
                 )}
                 {course.isVerified === "approved" && (
-                  <div className="text-green-700 text-xs mt-1">
-                    Course is verified and approved.
+                  <div className="bg-green-50 border border-green-200 rounded-md p-3">
+                    <p className="text-green-800 text-sm">
+                      Course is verified and approved for students.
+                    </p>
                   </div>
                 )}
               </div>
-            </div>
-
-            <div className="flex mt-10 justify-end space-x-2">
-              {/* Delete Confirmation Modal */}
-              <DeleteCourseModal
-                confirmOpen={confirmOpen}
-                setConfirmOpen={setConfirmOpen}
-                fetchCourseDetail={fetchCourseDetail}
-                id={id}
-                setSuccessOpen={setSuccessOpen}
-              />
-              {/* ✅ Success Confirmation Modal */}
-              <Dialog open={successOpen} onOpenChange={setSuccessOpen}>
-                <DialogContent className="flex flex-col items-center justify-center text-center">
-                  <CheckCircle className="w-12 h-12 text-green-500" />
-                  <h3 className="text-lg font-semibold mt-2">
-                    Course deleted successfully!
-                  </h3>
-                </DialogContent>
-              </Dialog>
-              <div>
-                <button
-                  className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded shadow-md transition-all duration-150 text-sm cursor-pointer"
+              <div className="flex flex-wrap gap-3 border-t border-gray-200 pt-4 mt-4">
+                <Button
+                  variant="outline"
+                  className="flex items-center gap-2"
                   onClick={() =>
                     navigate(`/admin/courses/generalcoursesdetailpage/${id}`)
                   }
                 >
-                  Preview as a student
-                </button>
+                  <Play className="w-4 h-4" />
+                  Preview as Student
+                </Button>
+                <Button
+                  variant="outline"
+                  className="flex items-center gap-2"
+                  onClick={() => navigate(`/admin/courses/edit/${id}`)}
+                >
+                  <Pen className="w-4 h-4" />
+                  Edit Course Info
+                </Button>
+                <AssessmentCategoryDialog courseId={id} />
               </div>
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-wrap justify-between gap-4">
-          <section className="flex justify-between items-center">
-            <AssessmentCategoryDialog courseId={id} />
-          </section>
-          <div className="flex justify-between items-center gap-4">
-            <button
-              variant="outline"
-              className="bg-green-500 text-white py-2 px-4 rounded-lg shadow-md transition-all duration-150 text-sm cursor-pointer"
-              onClick={() => navigate(`/admin/courses/stdPreview/${id}`)}
-            >
-              Preview as a student
-            </button>
-            {/* <button
-              variant="outline"
-              className="flex gap-2 items-center bg-blue-600 text-white py-2 px-4 rounded-lg shadow-md transition-all duration-150 text-sm cursor-pointer"
-              onClick={() => navigate(`/teacher/gradebook/${id}`)}
-            >
-              <BookPlus size={16} />
-              Gradebook
-            </button> */}
-            <button
-              variant="outline"
-              className="flex gap-2 items-center bg-slate-600 text-white py-2 px-4 rounded-lg shadow-md transition-all duration-150 text-sm cursor-pointer"
-              onClick={() => navigate(`/admin/courses/edit/${id}`)}
-            >
-              <Pen size={16} />
-              Edit Course Info
-            </button>
-          </div>
-        </div>
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard
-            icon={<Languages className="h-5 w-5 text-orange-500" />}
-            value={course.language?.toUpperCase()}
-            label="Language"
-            bgColor="bg-slate-100 hover:bg-slate-200"
-          />
-          <StatCard
-            icon={<ChartBarStacked className="h-5 w-5 text-orange-500" />}
-            value={course.category?.title?.toUpperCase()}
-            label="Category"
-            bgColor="bg-slate-100 hover:bg-slate-200"
-          />
+            </CardContent>
+          </Card>
 
-          <StatCard
-            icon={<LibraryBig className="h-5 w-5 text-orange-500" />}
-            value={course.semester?.length || 0}
-            label="Semesters"
-            bgColor="bg-slate-100 hover:bg-slate-200"
-          />
-
-          <StatCard
-            icon={<Users className="h-5 w-5 text-orange-500" />}
-            value={course.enrollments?.length}
-            label="Students Enrolled"
-            bgColor="bg-slate-100 hover:bg-slate-200"
-          />
+          {/* Action Buttons */}
         </div>
-        {/* <SelectSemAndQuarDialog
-          prevSelectedSemesters={prevSemesterIds}
-          prevSelectedQuarters={prevQuarterIds}
-          courseId={id}
-          fetchCourseDetail={fetchCourseDetail}
-        /> */}
-        {course?.semester?.length === 0 ? (
-          <p className="text-lg font-semibold text-center mt-6">
-            No Semester added by teacher
-          </p>
-        ) : (
-          course?.semester?.map((semester, index) => (
-            <Link
-              key={semester._id}
-              to={`/admin/courses/${id}/semester/${semester._id}`}
-            >
-              <div
-                key={semester._id}
-                className="mb-4 border border-gray-200 p-5 rounded-lg bg-gray-50 hover:bg-gray-100 cursor-pointer"
-              >
-                <h3 className="font-semibold text-md">
-                  Semester {index + 1}: {semester.title}
-                </h3>
-                <p className="text-xs text-muted-foreground">
-                  {format(new Date(semester.startDate), "MMMM do, yyyy")} -{" "}
-                  {format(new Date(semester.endDate), "MMMM do, yyyy")}
-                </p>
-              </div>
-            </Link>
-          ))
-        )}
-        {/* <div className="flex gap-4">
-          <Pages />
-          <button
-            onClick={() => navigate(`/teacher/courses/${id}/posts`)} // dynamic course ID
-            className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
-          >
-            View Course Posts
-          </button>
-        </div> */}
-        {/* Final Assessment Cards */}
-        {Array.isArray(course.Assessments) &&
-          course.CourseAssessments.map((assessment) => (
-            <FinalCourseAssessmentCard
-              key={assessment._id} // Use unique id as key
-              assessment={assessment}
-              handleDeleteAssessment={handleDeleteAssessment}
-            />
-          ))}
-        {/* Rating */}
-        <RatingSection courseId={id} />
       </div>
 
+      {/* Stats Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <StatCard
+          icon={<Languages className="h-5 w-5 text-blue-500" />}
+          value={course.language?.toUpperCase() || "N/A"}
+          label="Language"
+        />
+        <StatCard
+          icon={<ChartBarStacked className="h-5 w-5 text-purple-500" />}
+          value={course.category?.title?.toUpperCase() || "N/A"}
+          label="Category"
+        />
+        <StatCard
+          icon={<LibraryBig className="h-5 w-5 text-green-500" />}
+          value={course.semester?.length || 0}
+          label="Semesters"
+        />
+        <StatCard
+          icon={<Users className="h-5 w-5 text-orange-500" />}
+          value={course.enrollments?.length || 0}
+          label="Students Enrolled"
+        />
+      </div>
+
+      <Card className="shadow-sm">
+        <CardContent className="p-6">
+          <h3 className="text-lg font-semibold mb-4">Course Documents</h3>
+          <div className="space-y-3">
+            {course.documents?.governmentId && (
+              <DocumentLink
+                label="Government ID"
+                document={course.documents.governmentId}
+              />
+            )}
+            {course.documents?.resume && (
+              <DocumentLink label="Resume" document={course.documents.resume} />
+            )}
+            {course.documents?.certificate && (
+              <DocumentLink
+                label="Certificate"
+                document={course.documents.certificate}
+              />
+            )}
+            {course.documents?.transcript && (
+              <DocumentLink
+                label="Transcript"
+                document={course.documents.transcript}
+              />
+            )}
+            {!hasAnyDocuments(course.documents) && (
+              <p className="text-sm text-muted-foreground">
+                No documents uploaded.
+              </p>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Semesters Section */}
+      <Card className="shadow-sm mb-8">
+        <CardContent className="p-6">
+          <h2 className="text-xl font-semibold mb-4">Course Semesters</h2>
+          {course?.semester?.length === 0 ? (
+            <div className="text-center py-8">
+              <LibraryBig className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+              <p className="text-gray-500">No semesters added yet</p>
+            </div>
+          ) : (
+            <div className="grid gap-4">
+              {course?.semester?.map((semester, index) => (
+                <Link
+                  key={semester._id}
+                  to={`/admin/courses/${id}/semester/${semester._id}`}
+                  className="block"
+                >
+                  <div className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 hover:border-gray-300 transition-all cursor-pointer">
+                    <h3 className="font-semibold text-lg text-gray-900">
+                      Semester {index + 1}: {semester.title}
+                    </h3>
+                    <p className="text-sm text-gray-600 mt-1">
+                      {format(new Date(semester.startDate), "MMMM do, yyyy")} -{" "}
+                      {format(new Date(semester.endDate), "MMMM do, yyyy")}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Final Assessment Cards */}
+      {Array.isArray(course.Assessments) &&
+        course.CourseAssessments?.map((assessment) => (
+          <FinalCourseAssessmentCard
+            key={assessment._id}
+            assessment={assessment}
+            handleDeleteAssessment={handleDeleteAssessment}
+          />
+        ))}
+
+      {/* Rating Section */}
+      <RatingSection courseId={id} />
+
+      {/* Comment Section */}
       <CommentSection id={id} />
 
-      <div className="flex justify-end space-x-4 mt-10">
-        {/* Archive Dialog */}
+      {/* Bottom Actions */}
+      <div className="flex justify-end gap-4 mt-8 pt-6 border-t border-gray-200">
         <ArchiveDialog course={course} fetchCourseDetail={fetchCourseDetail} />
-
-        {/* Delete Confirmation Modal */}
         <DeleteCourseModal
           confirmOpen={confirmOpen}
           setConfirmOpen={setConfirmOpen}
@@ -481,31 +470,73 @@ export default function TeacherCourseDetails() {
           id={id}
           setSuccessOpen={setSuccessOpen}
         />
-
-        {/* ✅ Success Confirmation Modal */}
-        <Dialog open={successOpen} onOpenChange={setSuccessOpen}>
-          <DialogContent className="flex flex-col items-center justify-center text-center">
-            <CheckCircle className="w-12 h-12 text-green-500" />
-            <h3 className="text-lg font-semibold mt-2">
-              Course deleted successfully!
-            </h3>
-          </DialogContent>
-        </Dialog>
       </div>
+
+      {/* Success Modal */}
+      <Dialog open={successOpen} onOpenChange={setSuccessOpen}>
+        <DialogContent className="flex flex-col items-center justify-center text-center">
+          <CheckCircle className="w-12 h-12 text-green-500" />
+          <h3 className="text-lg font-semibold mt-2">
+            Course deleted successfully!
+          </h3>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
 
-function StatCard({ icon, value, label, bgColor }) {
+// Helper Components
+function StatCard({ icon, value, label }) {
   return (
-    <Card className={`border-0 shadow-sm ${bgColor}`}>
-      <CardContent className="p-2 flex items-center gap-4">
-        <div className="p-2 rounded-md bg-white">{icon}</div>
-        <div>
-          <div className="font-semibold text-lg">{value}</div>
-          <div className="text-sm text-muted-foreground">{label}</div>
+    <Card className="shadow-sm hover:shadow-md transition-shadow">
+      <CardContent className="p-4">
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-gray-50">{icon}</div>
+          <div>
+            <div className="font-bold text-xl text-gray-900">{value}</div>
+            <div className="text-sm text-gray-600">{label}</div>
+          </div>
         </div>
       </CardContent>
     </Card>
   );
+}
+
+function DocumentLink({ label, document }) {
+  return (
+    <a
+      href={document.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors group"
+    >
+      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+      <div className="flex-1">
+        <span className="font-medium text-gray-900 group-hover:text-blue-600">
+          {label}:
+        </span>
+        <span className="text-sm text-gray-600 ml-2">{document.filename}</span>
+      </div>
+    </a>
+  );
+}
+
+// Helper Functions
+function hasAnyDocuments(documents) {
+  return (
+    documents?.governmentId ||
+    documents?.resume ||
+    documents?.certificate ||
+    documents?.transcript
+  );
+}
+
+function formatDate(dateString) {
+  return dateString
+    ? new Date(dateString).toLocaleDateString("en-US", {
+        year: "2-digit",
+        month: "2-digit",
+        day: "2-digit",
+      })
+    : "N/A";
 }
