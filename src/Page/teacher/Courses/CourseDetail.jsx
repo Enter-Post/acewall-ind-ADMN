@@ -330,7 +330,7 @@ export default function TeacherCourseDetails() {
                   variant="outline"
                   className="flex items-center gap-2"
                   onClick={() =>
-                    navigate(`/admin/courses/generalcoursesdetailpage/${id}`)
+                    navigate(`/admin/courses/stdPreview/${id}`)
                   }
                 >
                   <Play className="w-4 h-4" />

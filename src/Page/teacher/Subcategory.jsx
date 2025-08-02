@@ -87,7 +87,6 @@ const Subcategory = () => {
       }
     }
   };
-
   const handleEditSubcategory = async () => {
     if (!editData.title.trim()) return;
 
@@ -145,7 +144,7 @@ const Subcategory = () => {
 
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">
-          Subcategories for: {decodeURIComponent(categoryName)}
+          Subcategories for: {categoryName}
         </h1>
 
         {/* Add Subcategory Dialog */}
@@ -253,8 +252,3 @@ const Subcategory = () => {
 };
 
 export default Subcategory;
-
-
-
-
-

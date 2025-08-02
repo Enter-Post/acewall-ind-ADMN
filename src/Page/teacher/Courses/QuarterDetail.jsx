@@ -78,11 +78,11 @@ const QuarterDetail = () => {
                 </p>
               </div>
             </div>
-            <ChapterCreationModal
+            {/* <ChapterCreationModal
               courseId={courseId}
               quarterId={id}
               fetchQuarterDetail={fetchQuarterDetail}
-            />
+            /> */}
           </div>
         </div>
 
@@ -97,11 +97,11 @@ const QuarterDetail = () => {
               Create your first chapter to get started with organizing your
               course content.
             </p>
-            <ChapterCreationModal
+            {/* <ChapterCreationModal
               courseId={courseId}
               quarterId={id}
               fetchQuarterDetail={fetchQuarterDetail}
-            />
+            /> */}
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

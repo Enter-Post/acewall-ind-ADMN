@@ -154,7 +154,7 @@ const TeacherChapterDetail = () => {
               chapterID={chapterId}
               fetchQuarterDetail={fetchChapterDetail}
             />
-            <Link
+            {/* <Link
               to={`/admin/assessments/create/chapter/${chapterId}/${courseId}/${quarterStart}/${quarterEnd}?semester=${chapter.semester?._id}&quarter=${chapter.quarter?._id}`}
             >
               <Button
@@ -164,7 +164,7 @@ const TeacherChapterDetail = () => {
                 <Plus className="h-4 w-4 mr-2" />
                 Add Assessment
               </Button>
-            </Link>
+            </Link> */}
           </div>
         </div>
 
@@ -273,7 +273,7 @@ const TeacherChapterDetail = () => {
                           <DeleteModal
                             deleteFunc={() => handleDeleteLesson(lesson._id)}
                           />
-                          <Link
+                          {/* <Link
                             to={`/admin/assessments/create/lesson/${lesson._id}/${courseId}/${quarterStart}/${quarterEnd}?semester=${chapter.semester?._id}&quarter=${chapter.quarter?._id}`}
                           >
                             <Button
@@ -284,14 +284,14 @@ const TeacherChapterDetail = () => {
                               <Plus className="h-4 w-4 mr-1" />
                               Assessment
                             </Button>
-                          </Link>
+                          </Link> */}
                         </section>
                       </div>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       {lesson.description && (
                         <p className="text-sm text-gray-600">
-                          {lesson.description}
+                          <div dangerouslySetInnerHTML={{ __html: lesson.description }} />
                         </p>
                       )}
 

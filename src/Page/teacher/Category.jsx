@@ -32,7 +32,7 @@ const Category = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  console.log(subCountMap, "subCountMap");
+  console.log(categories, "categories");
 
   useEffect(() => {
     fetchCategories();
@@ -185,11 +185,7 @@ const Category = () => {
                     <TableCell>
                       <span
                         onClick={() =>
-                          navigate(
-                            `/admin/subcategory/${encodeURIComponent(
-                              cat.title
-                            )}`
-                          )
+                          navigate(`/admin/subcategory/${cat.title}`)
                         }
                         className="text-blue-600 hover:underline cursor-pointer"
                       >
@@ -215,11 +211,7 @@ const Category = () => {
                         variant="link"
                         className="text-sm text-blue-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-400"
                         onClick={() =>
-                          navigate(
-                            `/admin/subcategory/${encodeURIComponent(
-                              cat._id
-                            )}`
-                          )
+                          navigate(`/admin/subcategory/${cat.title}`)
                         }
                         role="link"
                         tabIndex={0}

@@ -430,7 +430,7 @@ export default function EditCourse() {
             <section className="my-4">
               <h3 className="text-lg font-medium mb-4">
                 What you will teach in this course{" "}
-                <span className="text-gray-500 text-xs">(max 6)</span>
+                <span className="text-gray-500 text-xs">(max 10)</span>
               </h3>
               {teachingPointsFields.map((field, index) => (
                 <TeachingPointInput
@@ -447,10 +447,10 @@ export default function EditCourse() {
               <div className="flex justify-end">
                 <button
                   type="button"
-                  disabled={teachingPointsFields.length >= 6}
+                  disabled={teachingPointsFields.length >= 10}
                   onClick={() => appendTeachingPoint({ value: "" })}
                   className={`mt-2 text-blue-500 text-sm border border-gray-300 px-4 py-2 rounded-lg hover:bg-blue-50 ${
-                    teachingPointsFields.length >= 6
+                    teachingPointsFields.length === 10
                       ? "opacity-50 cursor-not-allowed"
                       : ""
                   }`}
@@ -463,7 +463,7 @@ export default function EditCourse() {
             <section>
               <h3 className="text-lg font-medium mb-4">
                 Course Requirements{" "}
-                <span className="text-gray-500 text-xs">(max 6)</span>
+                <span className="text-gray-500 text-xs">(max 10)</span>
               </h3>
               {requirementsFields.map((field, index) => (
                 <RequirementInput
@@ -482,11 +482,11 @@ export default function EditCourse() {
                   type="button"
                   onClick={() => appendRequirement({ value: "" })}
                   className={`mt-2 text-blue-500 text-sm border border-gray-300 px-4 py-2 rounded-lg hover:bg-blue-50 ${
-                    requirementsFields.length >= 6
+                    requirementsFields.length >= 10
                       ? "opacity-50 cursor-not-allowed"
                       : ""
                   }`}
-                  disabled={requirementsFields.length >= 6}
+                  disabled={requirementsFields.length === 10}
                 >
                   + Add Requirement
                 </button>

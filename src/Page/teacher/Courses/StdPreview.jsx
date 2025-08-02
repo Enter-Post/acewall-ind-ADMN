@@ -225,7 +225,7 @@ const StdPreview = () => {
                                       {lesson.description && (
                                         <p className="text-sm text-gray-700 leading-relaxed">
                                           {" "}
-                                          {lesson.description}
+                                          <div dangerouslySetInnerHTML={{ __html: lesson.description }} />
                                         </p>
                                       )}
 
