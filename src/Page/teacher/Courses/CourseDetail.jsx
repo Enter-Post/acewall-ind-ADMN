@@ -38,6 +38,9 @@ import { SelectSemAndQuarDialog } from "@/CustomComponent/CreateCourse/SelectSem
 import ArchiveDialog from "@/CustomComponent/teacher/ArchivedModal";
 import BackButton from "@/CustomComponent/BackButton";
 import { cn } from "@/lib/utils";
+import { RejectCourseDialog } from "@/CustomComponent/RejectCourseDialog";
+import { Badge } from "@/components/ui/badge";
+import avatar from "@/assets/avatar.png";
 
 export default function TeacherCourseDetails() {
   const { id } = useParams();
@@ -52,7 +55,7 @@ export default function TeacherCourseDetails() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
 
-  console.log(course?.quarter, "course");
+  console.log(course, "course");
   console.log(quarters, "quarters");
 
   const handleDeleteAssessment = (assessmentID) => {
@@ -163,27 +166,46 @@ export default function TeacherCourseDetails() {
   return (
     <div className="container mx-auto px-4 py-6 max-w-7xl">
       {/* Header Section */}
-      <div className="flex justify-between items-center mb-6">
-        <BackButton label="Back" />
-        {course && course.isVerified === "pending" && (
-          <div className="flex gap-3">
-            <Button
-              className="bg-green-500 hover:bg-green-600 text-white"
-              onClick={() => handleVerifyCourse("approved")}
-            >
-              Verify Course
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={() => handleVerifyCourse("rejected")}
-            >
-              Reject Course
-            </Button>
-          </div>
-        )}
+      <BackButton label="Back" className="mb-2" />
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-8 gap-4">
+        <div className="flex flex-col md:flex-row gap-3 items-center md:items-start">
+          {course && course?.isAppliedReverified?.status === true && (
+            <div className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-lg self-start">
+              <Badge
+                variant="shaded"
+                className="bg-green-200 text-gray-700 font-medium text-xs"
+              >
+                Re-verification Requested
+              </Badge>
+              <span className="text-xs text-gray-600">
+                {course.isAppliedReverified.request}
+              </span>
+            </div>
+          )}
+          {course && course.isVerified === "pending" && (
+            <div className="flex flex-col gap-2 self-start">
+              <section className="flex items-center gap-3">
+                <Button
+                  className="bg-green-500 hover:bg-green-600 text-white text-sm px-4 py-2 rounded-lg shadow"
+                  onClick={() => handleVerifyCourse("approved")}
+                >
+                  Verify Course
+                </Button>
+                <RejectCourseDialog
+                  courseID={id}
+                  fetchCourseDetail={fetchCourseDetail}
+                />
+              </section>
+            </div>
+          )}
+          {course.createdby.isVarified === false && (
+            <div className="text-red-500 text-xs">
+              This course is from an unverified teacher, please verify the
+              teacher first
+            </div>
+          )}
+        </div>
       </div>
-
-      {/* Archive Warning */}
       {!course.published && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
           <p className="text-red-800 text-sm font-medium">
@@ -281,6 +303,10 @@ export default function TeacherCourseDetails() {
                   {course.courseDescription || "No description available."}
                 </p>
 
+                <p className="text-lg font-semibold text-gray-800">
+                  ${course.price ? course.price.toFixed(2) : "N/A"}
+                </p>
+
                 {/* Verification Status */}
                 <div className="flex items-center gap-2">
                   <span
@@ -311,10 +337,10 @@ export default function TeacherCourseDetails() {
                 )}
                 {course.isVerified === "rejected" && (
                   <div className="bg-red-50 border border-red-200 rounded-md p-3">
-                    <p className="text-red-800 text-sm">
-                      Course verification was rejected. Please review and update
-                      your course.
-                    </p>
+                    <span className="text-red-800 text-sm flex gap-2">
+                      <p className="font-semibold">Admin Remark: </p>
+                      <p>{course.remarks || "No remarks from admin."} </p>
+                    </span>
                   </div>
                 )}
                 {course.isVerified === "approved" && (
@@ -329,9 +355,7 @@ export default function TeacherCourseDetails() {
                 <Button
                   variant="outline"
                   className="flex items-center gap-2"
-                  onClick={() =>
-                    navigate(`/admin/courses/stdPreview/${id}`)
-                  }
+                  onClick={() => navigate(`/admin/courses/stdPreview/${id}`)}
                 >
                   <Play className="w-4 h-4" />
                   Preview as Student
@@ -379,7 +403,43 @@ export default function TeacherCourseDetails() {
 
       <Card className="shadow-sm">
         <CardContent className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Course Documents</h3>
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Teacher:</h3>
+          </div>
+          <div className="flex items-center gap-4 mb-4">
+            <Link to={`/admin/teacherProfile/${course.createdby?._id}`}>
+              {course.createdby?.profileImg ? (
+                <img
+                  src={course.createdby?.profileImg?.url || "/placeholder.svg"}
+                  alt="Instructor Profile"
+                  className="w-16 h-16 rounded-full object-cover"
+                />
+              ) : (
+                <img
+                  src={avatar}
+                  alt="Instructor Profile"
+                  className="w-16 h-16 rounded-full object-cover"
+                />
+              )}
+            </Link>
+
+            <div>
+              <h3 className="text-lg font-semibold text-gray-800">
+                {course.createdby?.firstName}{" "}
+                {course.createdby?.middleName
+                  ? course.createdby.middleName + " "
+                  : ""}{" "}
+                {course.createdby?.lastName}
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                {course.createdby?.email}
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Course Documents</h3>
+          </div>
           <div className="space-y-3">
             {course.documents?.governmentId && (
               <DocumentLink
@@ -387,6 +447,7 @@ export default function TeacherCourseDetails() {
                 document={course.documents.governmentId}
               />
             )}
+
             {course.documents?.resume && (
               <DocumentLink label="Resume" document={course.documents.resume} />
             )}
