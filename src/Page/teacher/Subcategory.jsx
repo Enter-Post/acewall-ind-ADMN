@@ -60,62 +60,99 @@ const Subcategory = () => {
     }
   };
 
-  const handleAddSubcategory = async () => {
-    if (!newSub.trim()) return;
+ const handleAddSubcategory = async () => {
+  const trimmedSub = newSub.trim();
 
-    try {
-      const { data } = await axiosInstance.post("/subcategory/create", {
-        title: newSub,
-        category: categoryId,
-      });
+  if (!trimmedSub) {
+    setError("Subcategory name cannot be empty.");
+    return;
+  }
 
-      setSubcategories((prev) =>
-        [...prev, data.subcategory].sort((a, b) =>
-          a.title.localeCompare(b.title)
+  const alreadyExists = subcategories.some(
+    (sub) => sub.title.toLowerCase() === trimmedSub.toLowerCase()
+  );
+
+  if (alreadyExists) {
+    setError("Subcategory already exists.");
+    return;
+  }
+
+  try {
+    const { data } = await axiosInstance.post("/subcategory/create", {
+      title: trimmedSub,
+      category: categoryId,
+    });
+
+    setSubcategories((prev) =>
+      [...prev, data.subcategory].sort((a, b) =>
+        a.title.localeCompare(b.title)
+      )
+    );
+
+    setNewSub("");
+    setDialogOpen(false);
+    setError("");
+  } catch (err) {
+    if (err.response?.status === 400 || err.response?.status === 409) {
+      setError(err.response.data.message || "Subcategory already exists.");
+    } else {
+      console.error("Error creating subcategory:", err);
+      setError("An unexpected error occurred.");
+    }
+  }
+};
+
+
+
+
+ const handleEditSubcategory = async () => {
+  const trimmedTitle = editData.title.trim();
+
+  if (!trimmedTitle) {
+    setEditError("Subcategory name cannot be empty.");
+    return;
+  }
+
+  const alreadyExists = subcategories.some(
+    (sub) =>
+      sub.title.toLowerCase() === trimmedTitle.toLowerCase() &&
+      sub._id !== editData.id
+  );
+
+  if (alreadyExists) {
+    setEditError("Subcategory already exists.");
+    return;
+  }
+
+  try {
+    const { data } = await axiosInstance.put(`/subcategory/${editData.id}`, {
+      title: trimmedTitle,
+      category: categoryId,
+    });
+
+    setSubcategories((prev) =>
+      prev
+        .map((sub) =>
+          sub._id === data.subcategory._id ? data.subcategory : sub
         )
-      );
+        .sort((a, b) => a.title.localeCompare(b.title))
+    );
 
-      setNewSub("");
-      setDialogOpen(false);
-      setError("");
-    } catch (err) {
-      if (err.response?.status === 400) {
-        setError(err.response.data.message);
-      } else {
-        console.error("Error creating subcategory:", err);
-        setError("An unexpected error occurred.");
-      }
+    setEditDialogOpen(false);
+    setEditData({ id: "", title: "" });
+    setEditError("");
+  } catch (err) {
+    if (err.response?.status === 400 || err.response?.status === 409) {
+      setEditError(err.response.data.message || "Subcategory already exists.");
+    } else {
+      console.error("Error updating subcategory:", err);
+      setEditError("An unexpected error occurred.");
     }
-  };
-  const handleEditSubcategory = async () => {
-    if (!editData.title.trim()) return;
+  }
+};
 
-    try {
-      const { data } = await axiosInstance.put(`/subcategory/${editData.id}`, {
-        title: editData.title,
-        category: categoryId,
-      });
 
-      setSubcategories((prev) =>
-        prev
-          .map((sub) =>
-            sub._id === data.subcategory._id ? data.subcategory : sub
-          )
-          .sort((a, b) => a.title.localeCompare(b.title))
-      );
 
-      setEditDialogOpen(false);
-      setEditData({ id: "", title: "" });
-      setEditError("");
-    } catch (err) {
-      if (err.response?.status === 400) {
-        setEditError(err.response.data.message);
-      } else {
-        console.error("Error updating subcategory:", err);
-        setEditError("An unexpected error occurred.");
-      }
-    }
-  };
 
   const handleDeleteSubcategory = async (id) => {
     try {

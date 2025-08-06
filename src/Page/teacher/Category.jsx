@@ -30,6 +30,8 @@ const Category = () => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editData, setEditData] = useState({ id: null, title: "" });
   const [loading, setLoading] = useState(false);
+  const [addError, setAddError] = useState("");
+
   const navigate = useNavigate();
 
   console.log(categories, "categories");
@@ -68,20 +70,35 @@ const Category = () => {
   };
 
   const handleAddCategory = async () => {
-    if (!newCategoryName.trim()) return;
+    if (!newCategoryName.trim()) {
+      setAddError("Category name cannot be empty");
+      return;
+    }
+
     try {
       const res = await axiosInstance.post("/category/create", {
         title: newCategoryName.trim(),
       });
+
       const newCat = res.data.category;
       setCategories((prev) => [...prev, newCat]);
       setSubCountMap((prev) => ({ ...prev, [newCat._id]: 0 }));
       setNewCategoryName("");
       setDialogOpen(false);
+      setAddError("");
     } catch (error) {
-      console.error("Error creating category:", error);
+      if (
+        error.response?.status === 400 ||
+        error.response?.status === 409 ||
+        error.response?.data?.message?.includes("already exists")
+      ) {
+        setAddError("Category already exists");
+      } else {
+        setAddError("Something went wrong");
+      }
     }
   };
+
 
   const handleEditCategory = async () => {
     try {
@@ -129,6 +146,8 @@ const Category = () => {
                 Add Category
               </Button>
             </div>
+            {addError && <p className="text-red-500 text-sm">{addError}</p>}
+
           </DialogContent>
         </Dialog>
 

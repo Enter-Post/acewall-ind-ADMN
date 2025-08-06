@@ -4,8 +4,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Calendar, Mail, School } from "lucide-react";
 import { TeacherProfileStatCard } from "@/CustomComponent/Card";
 import { axiosInstance } from "@/lib/AxiosInstance";
-import { toast } from "sonner"; 
+import { toast } from "sonner";
 import BackButton from "@/CustomComponent/BackButton";
+import TeacherDocumentsAdmin from "@/CustomComponent/teacher/TeacherDocumentsAdmin";
 
 export default function TeacherProfile() {
   const { id } = useParams();
@@ -53,19 +54,7 @@ export default function TeacherProfile() {
     getCourses();
   }, [id]);
 
-  const updateDocumentStatus = async (docId, status) => {
-    await axiosInstance
-      .patch(`auth/verify-document/${id}/${docId}`, { status })
-      .then((res) => {
-        toast.success(`Document ${status === "verified" ? "verified" : "rejected"} successfully`);
-        fetchTeacher()
-      })
-      .catch((err) => {
-        console.error("Failed to update document status:", err);
-        toast.error("Failed to update document status");
-      });
-
-  };
+ 
 
   if (teacherLoading || courseLoading) {
     return <p className="text-center py-20 text-gray-500">Loading profile and courses...</p>;
@@ -184,66 +173,11 @@ export default function TeacherProfile() {
       </div>
 
       {/* Documents */}
-      <div className="mt-12">
-        <h2 className="text-2xl font-semibold mb-6 text-gray-800">Uploaded Documents</h2>
-        {teacherInfo.documents && teacherInfo.documents.length > 0 ? (
-          <ul className="space-y-4">
-            {teacherInfo.documents.map((doc) => (
-              <li
-                key={doc._id}
-                className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 bg-gray-50 border border-gray-200 rounded-md shadow-sm  transition"
-              >
-                <div>
-                  <p className="text-lg font-medium text-gray-800">{doc.name}</p>
-                  <p className="text-sm text-gray-600">
-                    Status:{" "}
-                    <span
-                      className={
-                        doc.verificationStatus === "verified"
-                          ? "text-green-600 font-semibold"
-                          : doc.verificationStatus === "not_verified"
-                            ? "text-red-600 font-semibold"
-                            : "text-yellow-600 font-semibold"
-                      }
-                    >
-                      {doc.verificationStatus}
-                    </span>
-                  </p>
-                </div>
-
-                <div className="flex flex-col sm:flex-row gap-2 items-center">
-                  <a
-                    href={doc.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
-                  >
-                    View
-                  </a>
-                  {doc.verificationStatus === "pending" && (
-                    <>
-                      <button
-                        onClick={() => updateDocumentStatus(doc._id, "verified")}
-                        className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
-                      >
-                        Approve
-                      </button>
-                      <button
-                        onClick={() => updateDocumentStatus(doc._id, "not_verified")}
-                        className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
-                      >
-                        Reject
-                      </button>
-                    </>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-center text-gray-500">No documents uploaded yet.</p>
-        )}
-      </div>
+      <TeacherDocumentsAdmin
+        teacherId={id}
+        documents={teacherInfo.documents}
+        refetch={fetchTeacher}
+      />
     </div>
   );
 };
