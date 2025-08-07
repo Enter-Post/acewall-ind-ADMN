@@ -147,7 +147,6 @@ const Category = () => {
               </Button>
             </div>
             {addError && <p className="text-red-500 text-sm">{addError}</p>}
-
           </DialogContent>
         </Dialog>
 

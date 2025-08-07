@@ -154,14 +154,14 @@ const Subcategory = () => {
 
 
 
-  const handleDeleteSubcategory = async (id) => {
-    try {
-      await axiosInstance.delete(`/subcategory/delete/${id}`);
-      setSubcategories((prev) => prev.filter((sub) => sub._id !== id));
-    } catch (err) {
-      console.error("Error deleting subcategory:", err);
-    }
-  };
+  // const handleDeleteSubcategory = async (id) => {
+  //   try {
+  //     await axiosInstance.delete(`/subcategory/delete/${id}`);
+  //     setSubcategories((prev) => prev.filter((sub) => sub._id !== id));
+  //   } catch (err) {
+  //     console.error("Error deleting subcategory:", err);
+  //   }
+  // };
 
   useEffect(() => {
     fetchCategoryId();
@@ -263,13 +263,7 @@ const Subcategory = () => {
                     >
                       Edit
                     </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleDeleteSubcategory(sub._id)}
-                    >
-                      <Trash2 className="text-red-500" size={18} />
-                    </Button>
+                   
                   </TableCell>
                 </TableRow>
               ))}
