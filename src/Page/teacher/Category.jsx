@@ -21,6 +21,8 @@ import { Label } from "@/components/ui/label";
 import { Plus, Loader, Pencil } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "@/lib/AxiosInstance";
+import { toast } from "sonner";
+
 
 const Category = () => {
   const [categories, setCategories] = useState([]);
@@ -31,6 +33,9 @@ const Category = () => {
   const [editData, setEditData] = useState({ id: null, title: "" });
   const [loading, setLoading] = useState(false);
   const [addError, setAddError] = useState("");
+  const [deleteError, setDeleteError] = useState("");
+  const [deletingId, setDeletingId] = useState(null); // Track which category is being deleted
+
 
   const navigate = useNavigate();
 
@@ -113,6 +118,46 @@ const Category = () => {
       console.error("Error updating category:", error);
     }
   };
+
+
+
+
+const handleDeleteCategory = async (id) => {
+  if (!window.confirm("Are you sure you want to delete this category?")) return;
+
+  try {
+    setDeletingId(id);
+    setDeleteError(""); // Clear previous error
+
+    await axiosInstance.delete(`category/delete/${id}`);
+
+    // Remove deleted category from state
+    setCategories((prev) => prev.filter((cat) => cat._id !== id));
+    setSubCountMap((prev) => {
+      const updated = { ...prev };
+      delete updated[id];
+      return updated;
+    });
+
+    toast.success("Category deleted successfully");
+  } catch (error) {
+    console.error("Delete error:", error);
+    const errorMessage = error.response?.data?.message || "Failed to delete category";
+
+    // Check for the specific error message about courses
+    if (errorMessage.includes("Category contains courses")) {
+      toast.error("Cannot delete category: It contains courses.");
+    } else {
+      toast.error(errorMessage);
+    }
+
+    setDeleteError(errorMessage);
+  } finally {
+    setDeletingId(null);
+  }
+};
+
+
 
   return (
     <div className="p-6 space-y-6">
@@ -236,6 +281,16 @@ const Category = () => {
                       >
                         Manage Subcategories
                       </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDeleteCategory(cat._id)}
+                        disabled={deletingId === cat._id}
+                        className="px-2 py-1 text-sm"
+                      >
+                        {deletingId === cat._id ? "Deleting..." : "Delete"}
+                      </Button>
+
                     </TableCell>
                   </TableRow>
                 ))}
@@ -244,6 +299,8 @@ const Category = () => {
           )}
         </CardContent>
       </Card>
+      
+
     </div>
   );
 };
