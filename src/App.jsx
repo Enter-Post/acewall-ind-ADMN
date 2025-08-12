@@ -38,31 +38,32 @@ function App() {
     checkAuth();
   }, []);
 
-  useEffect(() => {
-    return () => {
-      connectsocket();
-    };
-  }, [user]);
-
   if (Authloading) {
     return <LoadingLoader />;
   }
 
-  const connectsocket = () => {
-    const newSocket = io("http://localhost:5050", {
-      query: { userId: user?._id || "" },
-    });
+  // useEffect(() => {
+  //   if (user) connectsocket();
+  //   return () => {
+  //     if (socket) socket.disconnect();
+  //   };
+  // }, [user]);
 
-    setSocket(newSocket);
+  // const connectsocket = () => {
+  //   const newSocket = io("http://localhost:5050", {
+  //     query: { userId: user?._id || "" },
+  //   });
 
-    newSocket.on("getOnlineUsers", (usersIds) => {
-      setOnlineUser(usersIds);
-    });
+  //   setSocket(newSocket);
 
-    newSocket.on("connect_error", (error) => {
-      console.error("Socket connection error:", error);
-    });
-  };
+  //   newSocket.on("getOnlineUsers", (usersIds) => {
+  //     setOnlineUser(usersIds);
+  //   });
+
+  //   newSocket.on("connect_error", (error) => {
+  //     console.error("Socket connection error:", error);
+  //   });
+  // };
 
   return (
     <>
@@ -80,14 +81,19 @@ function App() {
         </Route>
 
         {/* Admin Routes */}
-        <Route element={<PrivateRoute user={user} allowedRole="admin" />}>
+        <Route
+          element={
+            <PrivateRoute
+              user={user}
+              allowedRole="admin"
+              loading={Authloading}
+            />
+          }
+        >
           <Route path="/admin" element={<TeacherLayout />}>
             <Route index element={<TeacherDashboard />} />
             <Route path="category" element={<Category />} />
-            <Route
-              path="subcategory/:categoryName"
-              element={<Subcategory />}
-            />
+            <Route path="subcategory/:categoryName" element={<Subcategory />} />
             <Route path="allStudent" element={<AllStudent />} />
             <Route path="newsletter" element={<Newsletter />} />
             <Route path="allTeacher" element={<AllTeacher />} />

@@ -10,7 +10,7 @@ export const GlobalContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
   const [user, setUser] = useState();
-  const [Authloading, setAuthLoading] = useState(false);
+  const [Authloading, setAuthLoading] = useState(true);
   const [signUpdata, setSignupData] = useState({});
   const [socket, setSocket] = useState(null);
   const [onlineUser, setOnlineUser] = useState([]);
