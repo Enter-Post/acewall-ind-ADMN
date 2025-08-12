@@ -89,7 +89,7 @@ export default function TeacherDashboard() {
       link: "/admin/allTeacher", // Route for teachers
     },
     {
-      title: "Total Categorys",
+      title: "Total Categories",
       value: totalCategories.length,
       icon: <Grid2x2 size={16} className="text-green-600" />,
       link: "/admin/category", // Route for categories
