@@ -13,20 +13,30 @@ import { useForm } from "react-hook-form";
 import { Label } from "@/components/ui/label";
 import { axiosInstance } from "@/lib/AxiosInstance";
 import { toast } from "sonner";
+import { Loader } from "lucide-react";
 
-export const RejectCourseDialog = ({ courseID, fetchCourseDetail }) => {
+export const RejectCourseDialog = ({
+  courseID,
+  fetchCourseDetail,
+  verifyloading,
+  rejectCourse,
+  setRejectCourse,
+}) => {
   const { register, handleSubmit, reset } = useForm();
 
   const handleReject = async (data) => {
+    setRejectCourse(true);
     await axiosInstance
       .put(`course/rejectCourse/${courseID}`, {
         remark: data.remark,
       })
       .then((res) => {
+        setRejectCourse(false);
         toast.success(res.data.message);
         fetchCourseDetail();
       })
       .catch((err) => {
+        setRejectCourse(false);
         toast.error(err.response?.data?.message);
       });
   };
@@ -34,7 +44,9 @@ export const RejectCourseDialog = ({ courseID, fetchCourseDetail }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="destructive">Reject Course</Button>
+        <Button variant="destructive" disabled={verifyloading}>
+          Reject Course
+        </Button>
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-md">
@@ -55,11 +67,24 @@ export const RejectCourseDialog = ({ courseID, fetchCourseDetail }) => {
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="ghost" onClick={() => reset()}>
+            <Button
+              type="button"
+              variant="ghost"
+              disabled={rejectCourse}
+              onClick={() => reset()}
+            >
               Cancel
             </Button>
-            <Button type="submit" variant="destructive">
-              Submit
+            <Button
+              type="submit"
+              disabled={verifyloading || rejectCourse}
+              variant="destructive"
+            >
+              {rejectCourse ? (
+                <Loader size={16} className={"animate-spin"} />
+              ) : (
+                "Submit"
+              )}
             </Button>
           </DialogFooter>
         </form>

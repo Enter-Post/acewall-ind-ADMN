@@ -54,6 +54,8 @@ export default function TeacherCourseDetails() {
   const [loadingThumbnail, setLoadingThumbnail] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
+  const [verifyloading, setVerifyloading] = useState(false);
+  const [rejectCourse, setRejectCourse] = useState(false);
 
   console.log(course, "course");
   console.log(quarters, "quarters");
@@ -86,13 +88,16 @@ export default function TeacherCourseDetails() {
   };
 
   const handleVerifyCourse = async (status) => {
+    setVerifyloading(true);
     await axiosInstance
       .put(`course/verifyCourse/${id}`, { isVerified: status })
       .then((res) => {
         toast.success(res.data.message);
+        setVerifyloading(false);
         fetchCourseDetail();
       })
       .catch((err) => {
+        setVerifyloading(false);
         toast.error(err.response?.data?.message || "Error verifying course");
       });
   };
@@ -189,9 +194,16 @@ export default function TeacherCourseDetails() {
                   className="bg-green-500 hover:bg-green-600 text-white text-sm px-4 py-2 rounded-lg shadow"
                   onClick={() => handleVerifyCourse("approved")}
                 >
-                  Verify Course
+                  {verifyloading ? (
+                    <Loader className="animate-spin w-4 h-4" />
+                  ) : (
+                    "Verify Course"
+                  )}
                 </Button>
                 <RejectCourseDialog
+                  verifyloading={verifyloading}
+                  rejectCourse={rejectCourse}
+                  setRejectCourse={setRejectCourse}
                   courseID={id}
                   fetchCourseDetail={fetchCourseDetail}
                 />
