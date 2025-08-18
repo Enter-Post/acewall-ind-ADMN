@@ -23,7 +23,6 @@ import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "@/lib/AxiosInstance";
 import { toast } from "sonner";
 
-
 const Category = () => {
   const [categories, setCategories] = useState([]);
   const [subCountMap, setSubCountMap] = useState({});
@@ -36,7 +35,6 @@ const Category = () => {
   const [deleteError, setDeleteError] = useState("");
   const [deletingId, setDeletingId] = useState(null); // Track which category is being deleted
 
-
   const navigate = useNavigate();
 
   console.log(categories, "categories");
@@ -48,7 +46,8 @@ const Category = () => {
   const fetchCategories = async () => {
     setLoading(true);
     try {
-      const res = await axiosInstance.get("/category/get");
+      const res = await axiosInstance.get("/admin/getCategories");
+      console.log(res, "get categories for admin");
       const cats = res.data.categories;
       setCategories(cats);
       await fetchSubcategoryCounts(cats);
@@ -104,7 +103,6 @@ const Category = () => {
     }
   };
 
-
   const handleEditCategory = async () => {
     try {
       const res = await axiosInstance.put(`category/edit/${editData.id}`, {
@@ -119,45 +117,42 @@ const Category = () => {
     }
   };
 
+  const handleDeleteCategory = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this category?"))
+      return;
 
+    try {
+      setDeletingId(id);
+      setDeleteError(""); // Clear previous error
 
+      await axiosInstance.delete(`category/delete/${id}`);
 
-const handleDeleteCategory = async (id) => {
-  if (!window.confirm("Are you sure you want to delete this category?")) return;
+      // Remove deleted category from state
+      setCategories((prev) => prev.filter((cat) => cat._id !== id));
+      setSubCountMap((prev) => {
+        const updated = { ...prev };
+        delete updated[id];
+        return updated;
+      });
 
-  try {
-    setDeletingId(id);
-    setDeleteError(""); // Clear previous error
+      toast.success("Category deleted successfully");
+    } catch (error) {
+      console.error("Delete error:", error);
+      const errorMessage =
+        error.response?.data?.message || "Failed to delete category";
 
-    await axiosInstance.delete(`category/delete/${id}`);
+      // Check for the specific error message about courses
+      if (errorMessage.includes("Category contains courses")) {
+        toast.error("Cannot delete category: It contains courses.");
+      } else {
+        toast.error(errorMessage);
+      }
 
-    // Remove deleted category from state
-    setCategories((prev) => prev.filter((cat) => cat._id !== id));
-    setSubCountMap((prev) => {
-      const updated = { ...prev };
-      delete updated[id];
-      return updated;
-    });
-
-    toast.success("Category deleted successfully");
-  } catch (error) {
-    console.error("Delete error:", error);
-    const errorMessage = error.response?.data?.message || "Failed to delete category";
-
-    // Check for the specific error message about courses
-    if (errorMessage.includes("Category contains courses")) {
-      toast.error("Cannot delete category: It contains courses.");
-    } else {
-      toast.error(errorMessage);
+      setDeleteError(errorMessage);
+    } finally {
+      setDeletingId(null);
     }
-
-    setDeleteError(errorMessage);
-  } finally {
-    setDeletingId(null);
-  }
-};
-
-
+  };
 
   return (
     <div className="p-6 space-y-6">
@@ -255,7 +250,7 @@ const handleDeleteCategory = async (id) => {
                         {cat.title}
                       </span>
                     </TableCell>
-                    <TableCell>{subCountMap[cat._id] ?? 0}</TableCell>
+                    <TableCell>{cat?.subcategories?.length}</TableCell>
                     <TableCell className="flex items-center space-x-3">
                       <Button
                         variant="outline"
@@ -290,7 +285,6 @@ const handleDeleteCategory = async (id) => {
                       >
                         {deletingId === cat._id ? "Deleting..." : "Delete"}
                       </Button>
-
                     </TableCell>
                   </TableRow>
                 ))}
@@ -299,8 +293,6 @@ const handleDeleteCategory = async (id) => {
           )}
         </CardContent>
       </Card>
-      
-
     </div>
   );
 };

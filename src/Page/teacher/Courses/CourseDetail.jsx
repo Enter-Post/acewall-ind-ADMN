@@ -210,7 +210,7 @@ export default function TeacherCourseDetails() {
               </section>
             </div>
           )}
-          {course.createdby.isVarified === false && (
+          {course?.createdby?.isVarified === false && (
             <div className="text-red-500 text-xs">
               This course is from an unverified teacher, please verify the
               teacher first
