@@ -29,6 +29,7 @@ import QuarterDetail from "./Page/teacher/Courses/QuarterDetail";
 import TeacherChapterDetail from "./Page/teacher/Courses/quarter/chapter-detail";
 import { AssessmentPage } from "./Page/teacher/Courses/quarter/assessment-dialog";
 import CreateAssessmentPage from "./Page/teacher/CreateAssessment";
+import WithdrawalsTable from "./Page/teacher/WithdrawalsTable";
 
 function App() {
   const { checkAuth, user, Authloading, socket, setSocket, setOnlineUser } =
@@ -100,6 +101,7 @@ function App() {
             <Route path="studentProfile/:id" element={<StudentProfile />} />
             <Route path="teacherProfile/:id" element={<TeacherProfile />} />
             <Route path="support" element={<Support />} />
+            <Route path="withdrawals" element={<WithdrawalsTable />} />
 
             <Route path="assessments">
               <Route
