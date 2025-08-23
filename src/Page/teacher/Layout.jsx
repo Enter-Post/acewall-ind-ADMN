@@ -70,6 +70,12 @@ const sideBarTabs = [
     icon: <Mails />,
     path: "/admin/Newsletter",
   },
+  {
+    id: 8,
+    name: "Withdrawals",
+    icon: <BookPlus />,
+    path: "/admin/withdrawals",
+  },
 
 ];
 

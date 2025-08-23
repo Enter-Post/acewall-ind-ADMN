@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext, useEffect, useState } from "react";
-import { BookOpen, GraduationCap, Users, Grid2x2, Mail } from "lucide-react";
+import { BookOpen, GraduationCap, Users, Grid2x2, Mail, DollarSign } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { axiosInstance } from "@/lib/AxiosInstance";
 import { GlobalContext } from "@/Context/GlobalProvider";
@@ -13,8 +13,8 @@ export default function TeacherDashboard() {
   const [Teachers, setTeachers] = useState([]);
   const [totalCategories, setTotalCategories] = useState(0);
   const [totalSubscribers, setTotalSubscribers] = useState(0);
+  const [totalWithdrawalsCount, setTotalWithdrawalsCount] = useState(0); // State for total withdrawals count
 
-  const [recentActivity, setRecentActivity] = useState([]);
   const { user } = useContext(GlobalContext);
   const teacherId = user?._id;
 
@@ -64,6 +64,16 @@ export default function TeacherDashboard() {
       .catch(console.error);
   }, []);
 
+  // Fetch total withdrawals count
+  useEffect(() => {
+    axiosInstance("teacher/admin/withdrawals")  // Adjust the API path if needed
+      .then((res) => {
+        console.log("Total Withdrawals:", res.data);
+        setTotalWithdrawalsCount(res.data.pagination.totalWithdrawalsCount || 0); // Access the totalWithdrawalsCount
+      })
+      .catch(console.error);
+  }, []);
+
   const metrics = [
     {
       title: "Approved Courses",
@@ -100,6 +110,12 @@ export default function TeacherDashboard() {
       icon: <Mail size={16} className="text-green-600" />,
       link: "/admin/newsletter", // Route for newsletter
     },
+    {
+      title: "Total Withdrawals", // New card for total withdrawals
+      value: totalWithdrawalsCount,
+      icon: <DollarSign size={16} className="text-green-600" />,
+      link: "/admin/withdrawals", // Route for withdrawals
+    },
   ];
 
   return (
@@ -129,37 +145,7 @@ export default function TeacherDashboard() {
         ))}
       </div>
 
-      {/* Activity and Recent Courses */}
-      {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold">
-              Recent Courses
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {courses.slice(0, 3).map((course, i) => (
-              <Link to={`/admin/courses/courseDetail/${course._id}`} key={i}>
-                <div className="flex gap-4 items-start border p-3 rounded-md bg-white hover:bg-gray-50 cursor-pointer">
-                  <img
-                    src={course.thumbnail?.url || "/placeholder.svg"}
-                    alt={course.courseTitle}
-                    className="w-10 h-10 object-cover rounded"
-                  />
-                  <div>
-                    <h3 className="text-sm font-medium">
-                      {course.courseTitle}
-                    </h3>
-                    <p className="text-xs text-gray-500">
-                      {course.category?.title}
-                    </p>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </CardContent>
-        </Card>
-      </div> */}
+      
     </div>
   );
 }
