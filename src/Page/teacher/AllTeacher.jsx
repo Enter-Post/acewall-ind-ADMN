@@ -6,7 +6,8 @@ import { axiosInstance } from "@/lib/AxiosInstance";
 const AllTeacher = () => {
   const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("verified"); 
+  const [activeTab, setActiveTab] = useState("verified");
+  const [searchTerm, setSearchTerm] = useState(""); // Search input state
 
   useEffect(() => {
     axiosInstance
@@ -47,9 +48,28 @@ const AllTeacher = () => {
   const filteredTeachers =
     activeTab === "verified" ? verifiedTeachers : notVerifiedTeachers;
 
+  // Apply search filter to teachers based on name or email
+  const searchedTeachers = filteredTeachers.filter(
+    (teacher) =>
+      teacher.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      teacher.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      teacher.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-4">All Teachers</h1>
+
+      {/* Search Input */}
+      <div className="mb-6">
+        <input
+          type="text"
+          placeholder="Search by name or email..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="px-4 py-2 w-full border rounded-md"
+        />
+      </div>
 
       {/* Tabs with counts */}
       <div className="flex gap-4 mb-6">
@@ -77,13 +97,13 @@ const AllTeacher = () => {
 
       {loading ? (
         <p className="text-gray-500">Loading teachers...</p>
-      ) : filteredTeachers.length === 0 ? (
+      ) : searchedTeachers.length === 0 ? (
         <p className="text-gray-500">
-          No {activeTab === "verified" ? "verified" : "not verified"} teachers found.
+          No teachers found with that search term.
         </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
-          {filteredTeachers.map((teacher) => (
+          {searchedTeachers.map((teacher) => (
             <Link key={teacher.id} to={`/admin/teacherProfile/${teacher.id}`}>
               <TeacherCard teacher={teacher} />
             </Link>
