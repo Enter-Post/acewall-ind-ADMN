@@ -184,7 +184,7 @@ const Subcategory = () => {
 
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">
-          Subcategories for: {categoryName}
+          SubTopicss for: {categoryName}
         </h1>
 
         {/* Add Subcategory Dialog */}
@@ -192,15 +192,15 @@ const Subcategory = () => {
           <DialogTrigger asChild>
             <Button className="flex items-center gap-2">
               <Plus size={18} />
-              Add Sub Category
+              Add Sub Topics
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add Sub Category</DialogTitle>
+              <DialogTitle>Add Sub Topics</DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
-              <Label htmlFor="subcategory">Sub Category Name</Label>
+              <Label htmlFor="subcategory">Sub Topics Name</Label>
               <Input
                 id="subcategory"
                 value={newSub}
@@ -219,17 +219,17 @@ const Subcategory = () => {
         <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Edit Sub Category</DialogTitle>
+              <DialogTitle>Edit Sub Topics</DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
-              <Label htmlFor="edit-subcategory">Sub Category Name</Label>
+              <Label htmlFor="edit-subcategory">Sub Topics Name</Label>
               <Input
                 id="edit-subcategory"
                 value={editData.title}
                 onChange={(e) =>
                   setEditData((prev) => ({ ...prev, title: e.target.value }))
                 }
-                placeholder="e.g. Updated Subcategory"
+                placeholder="e.g. Updated SubTopics"
               />
               {editError && <p className="text-red-500 text-sm">{editError}</p>}
               <Button onClick={handleEditSubcategory} className="w-full">
@@ -246,7 +246,7 @@ const Subcategory = () => {
             <TableHeader>
               <TableRow>
                 <TableHead>Serial Number</TableHead>
-                <TableHead>Sub Category</TableHead>
+                <TableHead>SubTopics</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -280,7 +280,7 @@ const Subcategory = () => {
               {subcategories.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={3} className="text-center text-gray-500">
-                    No subcategories found.
+                    No subTopics found.
                   </TableCell>
                 </TableRow>
               )}

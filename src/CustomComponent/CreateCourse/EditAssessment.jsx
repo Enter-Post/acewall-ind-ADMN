@@ -207,7 +207,7 @@ export default function EditAssessmentDialog({ assessment, fetchAssessment }) {
               name="category"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Category</FormLabel>
+                  <FormLabel>Topics</FormLabel>
                   <FormControl>
                     <CategoryDropdown
                       assessmentId={assessment.id}
