@@ -27,7 +27,7 @@ const CategorySelect = ({ register, errors, onCategoryChange }) => {
   return (
     <div>
       <Label htmlFor="category" className="block mb-2">
-        Category
+        Topics
       </Label>
       <Select
         onValueChange={(value) => {
@@ -37,7 +37,7 @@ const CategorySelect = ({ register, errors, onCategoryChange }) => {
         }}
       >
         <SelectTrigger className="bg-gray-50">
-          <SelectValue placeholder="Select category" />
+          <SelectValue placeholder="Select Topics" />
         </SelectTrigger>
         <SelectContent>
           {categories.length > 0 ? (

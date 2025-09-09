@@ -32,7 +32,7 @@ const SubCategorySelect = ({ register, errors, selectedCategory }) => {
   return (
     <div>
       <Label htmlFor="subcategory" className="block mb-2">
-        Sub Category
+        SubTopics
       </Label>
       <Select
         onValueChange={(value) => {
@@ -42,7 +42,7 @@ const SubCategorySelect = ({ register, errors, selectedCategory }) => {
         disabled={!selectedCategory}
       >
         <SelectTrigger className="bg-gray-50">
-          <SelectValue placeholder="Select sub category" />
+          <SelectValue placeholder="Select SubTopics" />
         </SelectTrigger>
         <SelectContent>
           {filteredSubcategories.map((value) => (

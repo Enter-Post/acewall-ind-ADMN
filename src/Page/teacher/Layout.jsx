@@ -11,6 +11,7 @@ import {
   Mails,
   BookPlus,
   NotebookPen,
+  Grid2x2,
 } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { TeacherTopNavbarDropDown } from "@/CustomComponent/TeacherTopNavDropDown";
@@ -40,8 +41,8 @@ const sideBarTabs = [
   { id: 2, name: "All Courses", icon: <Book02Icon />, path: "/admin/courses" },
   {
     id: 3,
-    name: "Category",
-    icon: <Megaphone02Icon />,
+    name: "Topics",
+    icon: <Grid2x2 />,
     path: "/admin/Category",
   },
 
