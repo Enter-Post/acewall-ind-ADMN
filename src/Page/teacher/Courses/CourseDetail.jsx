@@ -3,7 +3,7 @@
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogFooter,
@@ -15,6 +15,7 @@ import {
 
 import {
   BookPlus,
+  Calendar,
   ChartBarStacked,
   CircleEllipsis,
   Languages,
@@ -56,6 +57,8 @@ export default function TeacherCourseDetails() {
   const [successOpen, setSuccessOpen] = useState(false);
   const [verifyloading, setVerifyloading] = useState(false);
   const [rejectCourse, setRejectCourse] = useState(false);
+  const [semesterbased, setSemesterBased] = useState();
+
 
   console.log(course, "course");
   console.log(quarters, "quarters");
@@ -81,6 +84,8 @@ export default function TeacherCourseDetails() {
       .then((res) => {
         setCourse(res.data.course);
         setQuarters(res.data.course.quarter);
+        setSemesterBased(res.data.course.semesterbased === true);
+        console.log(res.data, "admin course");
       })
       .catch((err) => {
         console.log(err);
@@ -485,37 +490,75 @@ export default function TeacherCourseDetails() {
       </Card>
 
       {/* Semesters Section */}
-      <Card className="shadow-sm mb-8">
-        <CardContent className="p-6">
-          <h2 className="text-xl font-semibold mb-4">Course Semesters</h2>
-          {course?.semester?.length === 0 ? (
-            <div className="text-center py-8">
-              <LibraryBig className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-              <p className="text-gray-500">No semesters added yet</p>
-            </div>
-          ) : (
+      {semesterbased === true ? (
+        <Card className="shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-xl flex items-center gap-2">
+              <LibraryBig className="w-6 h-6" />
+              Course Semesters
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {course?.semester?.length > 0 ? (
+              <div className="grid gap-4">
+                {course.semester.map((semester, index) => (
+                  <Link
+                    key={semester._id}
+                    to={`/admin/courses/${id}/semester/${semester._id}`}
+                    className="block"
+                  >
+                    <div className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 hover:border-gray-300 transition-all cursor-pointer">
+                      <h3 className="font-semibold text-lg text-gray-900">
+                        Semester {index + 1}: {semester.title}
+                      </h3>
+                      <p className="text-sm text-gray-600 mt-1 flex items-center gap-1">
+                        <Calendar className="w-3 h-3" />
+                        {format(
+                          new Date(semester.startDate),
+                          "MMMM do, yyyy"
+                        )}{" "}
+                        -{" "}
+                        {format(new Date(semester.endDate), "MMMM do, yyyy")}
+                      </p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <LibraryBig className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                <p className="text-gray-500">No semesters found</p>
+                <p className="text-sm text-gray-400 mt-1">
+                  Create your first semester to get started
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      ) : (
+        <Card className="shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-xl flex items-center gap-2">
+              <LibraryBig className="w-6 h-6" />
+              Course Chapters
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
             <div className="grid gap-4">
-              {course?.semester?.map((semester, index) => (
-                <Link
-                  key={semester._id}
-                  to={`/admin/courses/${id}/semester/${semester._id}`}
-                  className="block"
-                >
-                  <div className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 hover:border-gray-300 transition-all cursor-pointer">
-                    <h3 className="font-semibold text-lg text-gray-900">
-                      Semester {index + 1}: {semester.title}
-                    </h3>
-                    <p className="text-sm text-gray-600 mt-1">
-                      {format(new Date(semester.startDate), "MMMM do, yyyy")} -{" "}
-                      {format(new Date(semester.endDate), "MMMM do, yyyy")}
-                    </p>
-                  </div>
-                </Link>
-              ))}
+              <Link
+                to={`/admin/courses/${id}/chapters?semesterbased=false`}
+                className="block"
+              >
+                <div className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 hover:border-gray-300 transition-all cursor-pointer">
+                  <h3 className="font-semibold text-lg text-gray-900">
+                    Chapter
+                  </h3>
+                </div>
+              </Link>
             </div>
-          )}
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Final Assessment Cards */}
       {Array.isArray(course.Assessments) &&
@@ -607,9 +650,9 @@ function hasAnyDocuments(documents) {
 function formatDate(dateString) {
   return dateString
     ? new Date(dateString).toLocaleDateString("en-US", {
-        year: "2-digit",
-        month: "2-digit",
-        day: "2-digit",
-      })
+      year: "2-digit",
+      month: "2-digit",
+      day: "2-digit",
+    })
     : "N/A";
 }
