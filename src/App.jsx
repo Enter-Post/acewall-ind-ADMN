@@ -42,30 +42,6 @@ function App() {
   if (Authloading) {
     return <LoadingLoader />;
   }
-
-  // useEffect(() => {
-  //   if (user) connectsocket();
-  //   return () => {
-  //     if (socket) socket.disconnect();
-  //   };
-  // }, [user]);
-
-  // const connectsocket = () => {
-  //   const newSocket = io("http://localhost:5050", {
-  //     query: { userId: user?._id || "" },
-  //   });
-
-  //   setSocket(newSocket);
-
-  //   newSocket.on("getOnlineUsers", (usersIds) => {
-  //     setOnlineUser(usersIds);
-  //   });
-
-  //   newSocket.on("connect_error", (error) => {
-  //     console.error("Socket connection error:", error);
-  //   });
-  // };
-
   return (
     <>
       <ScrollToTop />
